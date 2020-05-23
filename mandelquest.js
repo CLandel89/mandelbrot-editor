@@ -16,11 +16,17 @@ let gl = (function () {
 let program; // an OpenGL program; ⇒ initMandelQuest
 let scene; // this controls everything you see in the canvas
 let uniformLoc, uniformTypeVal; // a mapping of OpenGL uniforms ⇒ initMandelQuest
+let colorsTex; // a texture that holds the coloring in a single row
+let cornerVertices; // a set of vertices that span the whole canvas
 
 function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    gl.viewport(0, 0, window.innerWidth, window.innerHeight);
+    let nw = Math.floor(window.innerWidth*15/16);
+    let nh = Math.floor(window.innerHeight*15/16);
+    if (nw !== canvas.width || nh !== canvas.height) {
+        canvas.width = nw;
+        canvas.height = nh;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+    }
 }
 
 function updateUniforms() {
@@ -34,20 +40,40 @@ function updateUniforms() {
         lenH = scene.l;
     }
     let offsetR = ComplexFunctions.fromPolar(lenW, scene.φ);
-    offsetR = [offsetR.re, offsetR.im];
     let offsetH = ComplexFunctions.fromPolar(lenH, scene.φ+Math.PI/2);
-    offsetH = [offsetH.re, offsetH.im];
     uniformTypeVal = {
         'colors': ['1i', [0]], //TEXTURE0
         'n_iter': ['1i', [scene.n_iter]],
         'pert': ['2f', [scene.pert.re, scene.pert.im]],
         'pos_part': ['1f', [scene.pos_part]],
-        'pos': ['2f', [scene.pos.re, scene.pos.im]],
+        'pos': ['2f', scene.pos],
         'offsetR': ['2f', offsetR],
         'offsetH': ['2f', offsetH],
         'windowSz': ['2f', [canvas.width, canvas.height]],
         'ANTIALIASING': ['1i', [1]], //1 means no antialiasing
     };
+}
+
+function drawScene() {
+    resizeCanvas();
+    updateUniforms();
+    gl.useProgram(program);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, colorsTex);
+    for (let uniform in uniformLoc) {
+        let typeVal = uniformTypeVal[uniform];
+        let type = typeVal[0], val = typeVal[1];
+        if (val instanceof Complex)
+            val = [val.re, val.im];
+        let loc = uniformLoc[uniform];
+        //the following turns out e.g. like this: gl.uniform2f(loc, 0.0, 0.0);
+        gl ['uniform'+type] . apply (gl, [loc].concat(val));
+    }
+    gl.drawArrays(
+        gl.TRIANGLES,
+        0,
+        cornerVertices.length/2,
+    );
 }
 
 function initMandelQuest()
@@ -68,6 +94,10 @@ function initMandelQuest()
     resizeCanvas();
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    //⇒mouse.js
+    canvas.onmousedown = handleMouseDown;
+    document.onmouseup = handleMouseUp;
+    document.onmousemove = handleMouseMove;
 
     // Shaders
     let vertex = gl.createShader(gl.VERTEX_SHADER);
@@ -109,7 +139,7 @@ function initMandelQuest()
     }
 
     // Attributes
-    let cornerVertices = [
+    cornerVertices = [
         // X, Y (×3)
         -1.0,-1.0,  1.0,-1.0,  1.0,1.0,
          1.0,1.0,  -1.0,1.0,  -1.0,-1.0,
@@ -129,8 +159,8 @@ function initMandelQuest()
     gl.enableVertexAttribArray(positionAttribLocation);
 
     // Textures
-    let farbenTex = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, farbenTex);
+    colorsTex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, colorsTex);
     gl.texImage2D(
         gl.TEXTURE_2D, //target
         0,             //level
@@ -149,19 +179,5 @@ function initMandelQuest()
     gl.bindTexture(gl.TEXTURE_2D, null);
 
     // Main render loop
-    gl.useProgram(program);
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, farbenTex);
-    for (let uniform in uniformLoc) {
-        let typeVal = uniformTypeVal[uniform];
-        let type = typeVal[0], val = typeVal[1];
-        let loc = uniformLoc[uniform];
-        //the following turns out e.g. like this: gl.uniform2f(loc, 0.0, 0.0);
-        gl ['uniform'+type] . apply (gl, [loc].concat(val));
-    }
-    gl.drawArrays(
-        gl.TRIANGLES,
-        0,
-        cornerVertices.length/2,
-    );
+    drawScene();
 }

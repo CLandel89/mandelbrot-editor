@@ -25,6 +25,11 @@ class Complex
         return new Complex(re*b.re - im*b.im, re*b.im + im*b.re);
     }
 
+    smul (b) {
+        //scalar multiplication: resulting in the same as this.mul(Complex(b,0))
+        return new Complex(this.re*b, this.im*b);
+    }
+
     div (b) {
         let re=this.re, im=this.re;
         // (a+bi)/(c+di) = ((a+bi)(c-di)) / (c²-(di)²) = (ac-adi+bci+bd) / (c²+d²)
