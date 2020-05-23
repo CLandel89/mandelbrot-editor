@@ -38,14 +38,14 @@ function updateUniforms() {
     let offsetH = ComplexFunctions.fromPolar(lenH, scene.φ+Math.PI/2);
     offsetH = [offsetH.re, offsetH.im];
     uniformTypeVal = {
-        'farben': ['1i', [0]], //TEXTURE0
+        'colors': ['1i', [0]], //TEXTURE0
         'n_iter': ['1i', [scene.n_iter]],
         'pert': ['2f', [scene.pert.re, scene.pert.im]],
-        'pos_anteil': ['1f', [scene.pos_part]],
+        'pos_part': ['1f', [scene.pos_part]],
         'pos': ['2f', [scene.pos.re, scene.pos.im]],
-        'versatzR': ['2f', offsetR],
-        'versatzO': ['2f', offsetH],
-        'fensterGr': ['2f', [canvas.width, canvas.height]],
+        'offsetR': ['2f', offsetR],
+        'offsetH': ['2f', offsetH],
+        'windowSz': ['2f', [canvas.width, canvas.height]],
         'ANTIALIASING': ['1i', [1]], //1 means no antialiasing
     };
 }
@@ -109,15 +109,15 @@ function initMandelQuest()
     }
 
     // Attributes
-    let eckeVertices = [
+    let cornerVertices = [
         // X, Y (×3)
         -1.0,-1.0,  1.0,-1.0,  1.0,1.0,
          1.0,1.0,  -1.0,1.0,  -1.0,-1.0,
     ];
-    let eckeVertexBufferObject = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, eckeVertexBufferObject);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(eckeVertices), gl.STATIC_DRAW);
-    let positionAttribLocation = gl.getAttribLocation(program, 'ecke');
+    let cornerVertexBufferObject = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, cornerVertexBufferObject);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cornerVertices), gl.STATIC_DRAW);
+    let positionAttribLocation = gl.getAttribLocation(program, 'corner');
     gl.vertexAttribPointer(
         positionAttribLocation,
         2, // number of elements per attribute
@@ -162,6 +162,6 @@ function initMandelQuest()
     gl.drawArrays(
         gl.TRIANGLES,
         0,
-        eckeVertices.length/2,
+        cornerVertices.length/2,
     );
 }

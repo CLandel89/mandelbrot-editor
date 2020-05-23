@@ -1,18 +1,18 @@
 let shaderV = `#version 300 es
 precision mediump float;
 
-in vec2 ecke; //[-1,-1],[1,-1],[-1,1] oder [1,1]
+in vec2 corner; //[-1,-1],[1,-1],[-1,1] oder [1,1]
 out vec2 posV;
-flat out vec2 pixelGr;
-uniform vec2 pos, versatzR, versatzO, fensterGr;
+flat out vec2 pixelSz;
+uniform vec2 pos, offsetR, offsetH, windowSz;
 
 void main() {
-    vec2 versatzNeu = ecke.x*versatzR + ecke.y*versatzO;
-    posV = pos + versatzNeu;
-    pixelGr = vec2(
-        length(versatzR) / (fensterGr.x / 2.0),
-        length(versatzO) / (fensterGr.y / 2.0)
+    vec2 offsetNew = corner.x*offsetR + corner.y*offsetH;
+    posV = pos + offsetNew;
+    pixelSz = vec2(
+        length(offsetR) / (windowSz.x / 2.0),
+        length(offsetH) / (windowSz.y / 2.0)
     );
-    gl_Position = vec4(ecke, -1, 1);
+    gl_Position = vec4(corner, -1, 1);
 }
 `;
