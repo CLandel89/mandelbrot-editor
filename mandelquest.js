@@ -76,15 +76,15 @@ function initMandelQuest()
     gl.shaderSource(fragment, shaderF);
     function checkCompileError(shader, type="") {
         if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-            console.error(`ERROR compiling ${type} shader!`, gl.getShaderInfoLog(shader));
-            return true;
+            let infoLog = gl.getShaderInfoLog(shader);
+            let msg = `ERROR compiling ${type} shader!\n${infoLog}`;
+            throw new Error(msg);
         }
-        return false;
     }
     gl.compileShader(vertex);
-    if (checkCompileError(vertex, 'vertex')) return;
+    checkCompileError(vertex, 'vertex'); //throws error
     gl.compileShader(fragment);
-    if (checkCompileError(fragment, 'fragment')) return;
+    checkCompileError(fragment, 'fragment'); //throws error
     program = gl.createProgram();
     gl.attachShader(program, vertex);
     gl.attachShader(program, fragment);
