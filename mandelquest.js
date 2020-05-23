@@ -38,7 +38,7 @@ function updateUniforms() {
     let offsetH = ComplexFunctions.fromPolar(lenH, scene.φ+Math.PI/2);
     offsetH = [offsetH.re, offsetH.im];
     uniformTypeVal = {
-        'farben': ['1i', [0]],
+        'farben': ['1i', [0]], //TEXTURE0
         'n_iter': ['1i', [scene.n_iter]],
         'pert': ['2f', [scene.pert.re, scene.pert.im]],
         'pos_anteil': ['1f', [scene.pos_part]],
@@ -151,7 +151,6 @@ function initMandelQuest()
     // Main render loop
     gl.useProgram(program);
     gl.activeTexture(gl.TEXTURE0);
-    uniformTypeVal['farben'][1] = 0;
     gl.bindTexture(gl.TEXTURE_2D, farbenTex);
     for (let uniform in uniformLoc) {
         let typeVal = uniformTypeVal[uniform];
