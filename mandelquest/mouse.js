@@ -7,19 +7,23 @@
 
 "use strict";
 
+{
+
+let $MQ = $MandelQuest;
+
 let mouseDown=false, lastMouseX=null, lastMouseY=null;
 
-function handleMouseDown(ev) {
+$MQ.handleMouseDown = function (ev) {
     mouseDown = true;
     lastMouseX = ev.clientX;
     lastMouseY = ev.clientY;
 }
 
-function handleMouseUp(ev) {
+$MQ.handleMouseUp = function (ev) {
     mouseDown = false;
 }
 
-function handleMouseMove(ev) {
+$MQ.handleMouseMove = function (ev) {
     if (mouseDown) {
         handleMouseDrag(ev);
         return;
@@ -31,16 +35,20 @@ function handleMouseDrag(ev) {
     const deltaX = newX-lastMouseX, deltaY = newY-lastMouseY;
 
     //Recycle some values calculated for the shaders.
+    let uniformTypeVal = $MQ.uniformTypeVal;
     const offsetR = uniformTypeVal['offsetR'][1];
     const offsetH = uniformTypeVal['offsetH'][1];
     //Put it together such that you can drag around the fractals.
     //Note the differences between canvas and OpenGL:
     //(0,0): upper left corner vs. middle
     //Y axis: points downwards vs. upwards
+    let scene = $MQ.scene, canvas = $MQ.canvas;
     scene.pos = scene.pos.sub(offsetR.smul(2*deltaX/canvas.width));
     scene.pos = scene.pos.add(offsetH.smul(2*deltaY/canvas.height));
-    drawScene();
+    $MQ.drawScene();
 
     lastMouseX = newX;
     lastMouseY = newY;
+}
+
 }

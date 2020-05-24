@@ -1,6 +1,10 @@
 "use strict";
 
-function* palette(n_iter, colors) {
+{
+
+let $MQ = $MandelQuest;
+
+$MQ.palette = function* (n_iter, colors) {
     if (!colors)
         colors = [
             [0,0,0],
@@ -22,11 +26,13 @@ function* palette(n_iter, colors) {
     }
 }
 
-function paletteArr(n_iter, colors) {
+$MQ.paletteArr = function (n_iter, colors) {
     let p = function* () {
-        for (let color of palette(n_iter, colors))
+        for (let color of $MQ.palette(n_iter, colors))
             for (let c of color)
                 yield c;
     };
     return Float32Array.from(p());
+}
+
 }

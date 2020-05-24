@@ -1,6 +1,36 @@
 "use strict";
 
-let canvas = document.getElementById("game-surface");
+{
+
+// Global modularization.
+// This could (and usually should) be done using ES2015 modules;
+// however Firefox 76 doesn't like that when opening the page from local files.
+
+if (window.$MandelQuest) throw new Error("window.$MandelQuest already set.");
+window.$MandelQuest = {}; //that's all, folks.
+
+let $MQ = $MandelQuest; //shorten this inside file-wide scopes
+
+// Include local "dependecies", i.e. the other JS files in the project.
+for (let dep of [
+    "fragment.glsl",
+    "vertex.glsl",
+    "complex",
+    "mouse",                                                            
+    "palette",
+]) {
+    //https://www.geeksforgeeks.org/how-to-include-a-javascript-file-in-another-javascript-file/
+    let scriptTag = document.createElement('script');
+    scriptTag.src = `mandelquest/${dep}.js`;
+    document.getElementsByTagName('head').item(0).appendChild(scriptTag);
+}
+
+// Now that the "dependencies" were attached to the document body,
+// we can instruct the browser to kick off the init method AFTER loading.
+document.body.onload = function () { $MQ.init(); };
+
+$MQ.canvas = document.getElementById("mandelquest-canvas");
+let canvas = $MQ.canvas;
 let gl = (function () {
     let gl = canvas.getContext('webgl2');
     if (!gl) {
@@ -13,9 +43,9 @@ let gl = (function () {
     }
     return gl;
 }) ();
-let program; // an OpenGL program; ⇒ initMandelQuest
+let program; // an OpenGL program; ⇒ $MQ.init
 let scene; // this controls everything you see in the canvas
-let uniformLoc, uniformTypeVal; // a mapping of OpenGL uniforms ⇒ initMandelQuest
+let uniformLoc, uniformTypeVal; // a mapping of OpenGL uniforms ⇒ $MQ.init
 let colorsTex; // a texture that holds the coloring in a single row
 let cornerVertices; // a set of vertices that span the whole canvas
 
@@ -39,9 +69,9 @@ function updateUniforms() {
         lenW = (canvas.width/canvas.height) * scene.l;
         lenH = scene.l;
     }
-    let offsetR = ComplexFunctions.fromPolar(lenW, scene.φ);
-    let offsetH = ComplexFunctions.fromPolar(lenH, scene.φ+Math.PI/2);
-    uniformTypeVal = {
+    let offsetR = $MQ.fromPolar(lenW, scene.φ);
+    let offsetH = $MQ.fromPolar(lenH, scene.φ+Math.PI/2);
+    $MQ.uniformTypeVal = {
         'colors': ['1i', [0]], //TEXTURE0
         'n_iter': ['1i', [scene.n_iter]],
         'pert': ['2f', [scene.pert.re, scene.pert.im]],
@@ -52,9 +82,10 @@ function updateUniforms() {
         'windowSz': ['2f', [canvas.width, canvas.height]],
         'ANTIALIASING': ['1i', [1]], //1 means no antialiasing
     };
+    uniformTypeVal = $MQ.uniformTypeVal;
 }
 
-function drawScene() {
+$MQ.drawScene = function () {
     resizeCanvas();
     updateUniforms();
     gl.useProgram(program);
@@ -63,7 +94,7 @@ function drawScene() {
     for (let uniform in uniformLoc) {
         let typeVal = uniformTypeVal[uniform];
         let type = typeVal[0], val = typeVal[1];
-        if (val instanceof Complex)
+        if (val instanceof $MQ.Complex)
             val = [val.re, val.im];
         let loc = uniformLoc[uniform];
         //the following turns out e.g. like this: gl.uniform2f(loc, 0.0, 0.0);
@@ -75,19 +106,22 @@ function drawScene() {
         cornerVertices.length/2,
     );
 }
+let drawScene = $MQ.drawScene;
 
-function initMandelQuest()
+$MQ.init = function ()
 {
-    if (!scene)
-        scene = {
+    if (!$MQ.scene)
+        // this controls everything you see in the canvas
+        $MQ.scene = {
             n_iter: 170,
             n_iter_prev: null,
-            pos: new Complex(0,0),
+            pos: new $MQ.Complex(0,0),
             pos_part: 1.0,
-            pert: new Complex(0,0), // add perturbation
+            pert: new $MQ.Complex(0,0), // add perturbation
             φ: 0.0, // turn the scene around
             l: 2.0, // the length (in the fractal pane) from pos to the nearest edge of the canvas
         };
+    scene = $MQ.scene;
 
     // To get WebGL started, I followed WebGL Tutorial 01 by Indigo Code:
     // https://www.youtube.com/watch?v=kB0ZVUrI4Aw
@@ -95,15 +129,15 @@ function initMandelQuest()
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     //⇒mouse.js
-    canvas.onmousedown = handleMouseDown;
-    document.onmouseup = handleMouseUp;
-    document.onmousemove = handleMouseMove;
+    canvas.onmousedown = $MQ.handleMouseDown;
+    document.onmouseup = $MQ.handleMouseUp;
+    document.onmousemove = $MQ.handleMouseMove;
 
     // Shaders
     let vertex = gl.createShader(gl.VERTEX_SHADER);
     let fragment = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(vertex, shaderV);
-    gl.shaderSource(fragment, shaderF);
+    gl.shaderSource(vertex, $MQ.shaderV);
+    gl.shaderSource(fragment, $MQ.shaderF);
     function checkCompileError(shader, type="") {
         if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
             let infoLog = gl.getShaderInfoLog(shader);
@@ -170,7 +204,7 @@ function initMandelQuest()
         0,             //border
         gl.RGB,        //format
         gl.FLOAT,      //type
-        paletteArr(scene.n_iter) //pixels
+        $MQ.paletteArr(scene.n_iter) //pixels
     );
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -180,4 +214,6 @@ function initMandelQuest()
 
     // Main render loop
     drawScene();
+}
+
 }

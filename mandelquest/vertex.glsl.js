@@ -1,4 +1,4 @@
-let shaderV = `#version 300 es
+{ $MandelQuest.shaderV = `#version 300 es
 precision mediump float;
 
 in vec2 corner; //[-1,-1],[1,-1],[-1,1] oder [1,1]
@@ -15,4 +15,4 @@ void main() {
     );
     gl_Position = vec4(corner, -1, 1);
 }
-`;
+`; }

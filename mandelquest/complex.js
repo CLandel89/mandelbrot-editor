@@ -1,6 +1,10 @@
 "use strict";
 
-class Complex
+{
+
+let $MQ = $MandelQuest;
+
+$MQ.Complex = class
 {
     constructor (re, im) {
         if (re === undefined) re = 0;
@@ -59,36 +63,38 @@ class Complex
     }
 }
 
-// Use these if you prefer writing "add(a,b,c)" instead of "a.add(b).add(c)",
+let Complex = $MQ.Complex;
+
+// Use these if you prefer writing "$MQ.add(a,b,c)" instead of "a.add(b).add(c)",
 // or need "fromPolar".
-let ComplexFunctions = {
-    add: function() {
-        let result = new Complex(0,0);
-        for (let x of arguments)
-            result = result.add(x);
-        return result;
-    },
-    sub: function() {
-        if (arguments.length === 0) return 0;
-        let result = arguments[0];
-        for (let x of arguments.slice(1))
-            result = result.sub(x);
-        return result;
-    },
-    mul: function() {
-        let result = Complex(1,0);
-        for (let x of arguments)
-            result = result.mul(x);
-        return result;
-    },
-    div: function() {
-        if (arguments.length === 0) return 1;
-        let result = arguments[0];
-        for (let x of arguments.slice(1))
-            result = result.div(x);
-        return result;
-    },
-    fromPolar: function(r, φ) {
-        return new Complex(r*Math.cos(φ), r*Math.sin(φ));
-    }
-};
+$MQ.add = function() {
+    let result = new Complex(0,0);
+    for (let x of arguments)
+        result = result.add(x);
+    return result;
+}
+$MQ.sub = function() {
+    if (arguments.length === 0) return 0;
+    let result = arguments[0];
+    for (let x of arguments.slice(1))
+        result = result.sub(x);
+    return result;
+}
+$MQ.mul = function() {
+    let result = Complex(1,0);
+    for (let x of arguments)
+        result = result.mul(x);
+    return result;
+}
+$MQ.div = function() {
+    if (arguments.length === 0) return 1;
+    let result = arguments[0];
+    for (let x of arguments.slice(1))
+        result = result.div(x);
+    return result;
+}
+$MQ.fromPolar = function(r, φ) {
+    return new Complex(r*Math.cos(φ), r*Math.sin(φ));
+}
+
+}
