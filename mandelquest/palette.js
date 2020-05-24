@@ -11,6 +11,7 @@ $MQ.palette = function* (n_iter, colors) {
             [0,0,1],
             [0,1,0],
             [1,0,0],
+            [0,0,0],
         ];
     for (let i=0; i<n_iter; i++) {
         //index for the first of two colors (with fractional part)
