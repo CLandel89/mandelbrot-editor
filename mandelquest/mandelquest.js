@@ -125,6 +125,7 @@ $MQ.init = function ()
     $MQ.canvas.onmousedown = $MQ.handleMouseDown;
     document.onmouseup = $MQ.handleMouseUp;
     document.onmousemove = $MQ.handleMouseMove;
+    $MQ.canvas.addEventListener('wheel', $MQ.handleWheel);
 
     // Shaders
     let vertex = $MQ.gl.createShader($MQ.gl.VERTEX_SHADER);

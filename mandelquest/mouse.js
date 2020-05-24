@@ -51,4 +51,29 @@ function handleMouseDrag(ev) {
     lastMouseY = newY;
 }
 
+$MQ.handleWheel = function (ev) {
+    //https://stackoverflow.com/a/10313183
+
+    const factor = 1.25 ** ev.deltaY;
+    $MQ.scene.l *= factor;
+    const pos = $MQ.scene.pos;
+    //calculate the position of the mouse cursor in the complex pane
+    const oR = $MQ.uniformTypeVal['offsetR'][1];
+    const oH = $MQ.uniformTypeVal['offsetH'][1];
+    let mX = (ev.clientX - $MQ.canvas.width/2) / ($MQ.canvas.width/2);
+    let mY = - (ev.clientY - $MQ.canvas.height/2) / ($MQ.canvas.height/2);
+    let posM = pos;
+    posM = posM.add(oR.smul(mX));
+    posM = posM.add(oH.smul(mY));
+    //calculate the new center position (the position under the mouse cursor be constant)
+    //be                    posM = pos + mX*oR + mY*oH
+    //and at the same time  posM = posN + factor*(mX*oR + mY*oH)
+    // pos + mX*oR + mY*oH = posN + factor*(mX*oR + mY*oH)
+    // posN = pos + (1-factor) * (mX*oR + mY*oH)
+    $MQ.scene.pos = pos.add($MQ.add(oR.smul(mX), oH.smul(mY)).smul(1-factor));
+    $MQ.drawScene();
+
+    return false;
+}
+
 }
