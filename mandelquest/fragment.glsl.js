@@ -1,4 +1,4 @@
-{ $MandelQuest.shaderF = `#version 300 es
+$MandelQuest.shaderF = `#version 300 es
 precision mediump float;
 
 in vec2 posV;
@@ -50,4 +50,4 @@ void main() {
     color /= float(ANTIALIASING*ANTIALIASING);
     out_Color = vec4(color, 1);
 }
-`; }
+`;
