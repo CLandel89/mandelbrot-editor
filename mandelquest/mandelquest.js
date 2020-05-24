@@ -16,7 +16,7 @@ for (let dep of [
     "fragment.glsl",
     "vertex.glsl",
     "complex",
-    "mouse",                                                            
+    "mouse",
     "palette",
 ]) {
     //https://www.geeksforgeeks.org/how-to-include-a-javascript-file-in-another-javascript-file/
@@ -30,12 +30,11 @@ for (let dep of [
 document.body.onload = function () { $MQ.init(); };
 
 $MQ.canvas = document.getElementById("mandelquest-canvas");
-let canvas = $MQ.canvas;
-let gl = (function () {
-    let gl = canvas.getContext('webgl2');
+$MQ.gl = (function () {
+    let gl = $MQ.canvas.getContext('webgl2');
     if (!gl) {
         alert('WebGL v2 not supported, falling back on experimental-webgl');
-        gl = canvas.getContext('experimental-webgl');
+        gl = $MQ.canvas.getContext('experimental-webgl');
     }
     if (!gl) {
         alert('Your browser does not support WebGL');
@@ -43,70 +42,64 @@ let gl = (function () {
     }
     return gl;
 }) ();
-let program; // an OpenGL program; ⇒ $MQ.init
-let scene; // this controls everything you see in the canvas
-let uniformLoc, uniformTypeVal; // a mapping of OpenGL uniforms ⇒ $MQ.init
-let colorsTex; // a texture that holds the coloring in a single row
-let cornerVertices; // a set of vertices that span the whole canvas
 
 function resizeCanvas() {
     let nw = Math.floor(window.innerWidth*15/16);
     let nh = Math.floor(window.innerHeight*15/16);
-    if (nw !== canvas.width || nh !== canvas.height) {
-        canvas.width = nw;
-        canvas.height = nh;
-        gl.viewport(0, 0, canvas.width, canvas.height);
+    if (nw !== $MQ.canvas.width || nh !== $MQ.canvas.height) {
+        $MQ.canvas.width = nw;
+        $MQ.canvas.height = nh;
+        $MQ.gl.viewport(0, 0, $MQ.canvas.width, $MQ.canvas.height);
     }
 }
 
 function updateUniforms() {
     let lenW, lenH; //length inside the complex pane of the fractal
-    if (canvas.height > canvas.width) {
-        lenW = scene.l;
-        lenH = (canvas.height/canvas.width) * scene.l;
+    if ($MQ.canvas.height > $MQ.canvas.width) {
+        lenW = $MQ.scene.l;
+        lenH = ($MQ.canvas.height/$MQ.canvas.width) * $MQ.scene.l;
     }
     else {
-        lenW = (canvas.width/canvas.height) * scene.l;
-        lenH = scene.l;
+        lenW = ($MQ.canvas.width/$MQ.canvas.height) * $MQ.scene.l;
+        lenH = $MQ.scene.l;
     }
-    let offsetR = $MQ.fromPolar(lenW, scene.φ);
-    let offsetH = $MQ.fromPolar(lenH, scene.φ+Math.PI/2);
+    let offsetR = $MQ.fromPolar(lenW, $MQ.scene.φ);
+    let offsetH = $MQ.fromPolar(lenH, $MQ.scene.φ+Math.PI/2);
     $MQ.uniformTypeVal = {
         'colors': ['1i', [0]], //TEXTURE0
-        'n_iter': ['1i', [scene.n_iter]],
-        'pert': ['2f', [scene.pert.re, scene.pert.im]],
-        'pos_part': ['1f', [scene.pos_part]],
-        'pos': ['2f', scene.pos],
+        'n_iter': ['1i', [$MQ.scene.n_iter]],
+        'pert': ['2f', [$MQ.scene.pert.re, $MQ.scene.pert.im]],
+        'pos_part': ['1f', [$MQ.scene.pos_part]],
+        'pos': ['2f', $MQ.scene.pos],
         'offsetR': ['2f', offsetR],
         'offsetH': ['2f', offsetH],
-        'windowSz': ['2f', [canvas.width, canvas.height]],
+        'windowSz': ['2f', [$MQ.canvas.width, $MQ.canvas.height]],
         'ANTIALIASING': ['1i', [1]], //1 means no antialiasing
     };
-    uniformTypeVal = $MQ.uniformTypeVal;
+    $MQ.uniformTypeVal = $MQ.uniformTypeVal;
 }
 
 $MQ.drawScene = function () {
     resizeCanvas();
     updateUniforms();
-    gl.useProgram(program);
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, colorsTex);
-    for (let uniform in uniformLoc) {
-        let typeVal = uniformTypeVal[uniform];
+    $MQ.gl.useProgram($MQ.program);
+    $MQ.gl.activeTexture($MQ.gl.TEXTURE0);
+    $MQ.gl.bindTexture($MQ.gl.TEXTURE_2D, $MQ.colorsTex);
+    for (let uniform in $MQ.uniformLoc) {
+        let typeVal = $MQ.uniformTypeVal[uniform];
         let type = typeVal[0], val = typeVal[1];
         if (val instanceof $MQ.Complex)
             val = [val.re, val.im];
-        let loc = uniformLoc[uniform];
+        let loc = $MQ.uniformLoc[uniform];
         //the following turns out e.g. like this: gl.uniform2f(loc, 0.0, 0.0);
-        gl ['uniform'+type] . apply (gl, [loc].concat(val));
+        $MQ.gl ['uniform'+type] . apply ($MQ.gl, [loc].concat(val));
     }
-    gl.drawArrays(
-        gl.TRIANGLES,
+    $MQ.gl.drawArrays(
+        $MQ.gl.TRIANGLES,
         0,
-        cornerVertices.length/2,
+        $MQ.cornerVertices.length/2,
     );
 }
-let drawScene = $MQ.drawScene;
 
 $MQ.init = function ()
 {
@@ -121,99 +114,99 @@ $MQ.init = function ()
             φ: 0.0, // turn the scene around
             l: 2.0, // the length (in the fractal pane) from pos to the nearest edge of the canvas
         };
-    scene = $MQ.scene;
+    $MQ.scene = $MQ.scene;
 
     // To get WebGL started, I followed WebGL Tutorial 01 by Indigo Code:
     // https://www.youtube.com/watch?v=kB0ZVUrI4Aw
     resizeCanvas();
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    $MQ.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    $MQ.gl.clear($MQ.gl.COLOR_BUFFER_BIT | $MQ.gl.DEPTH_BUFFER_BIT);
     //⇒mouse.js
-    canvas.onmousedown = $MQ.handleMouseDown;
+    $MQ.canvas.onmousedown = $MQ.handleMouseDown;
     document.onmouseup = $MQ.handleMouseUp;
     document.onmousemove = $MQ.handleMouseMove;
 
     // Shaders
-    let vertex = gl.createShader(gl.VERTEX_SHADER);
-    let fragment = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(vertex, $MQ.shaderV);
-    gl.shaderSource(fragment, $MQ.shaderF);
+    let vertex = $MQ.gl.createShader($MQ.gl.VERTEX_SHADER);
+    let fragment = $MQ.gl.createShader($MQ.gl.FRAGMENT_SHADER);
+    $MQ.gl.shaderSource(vertex, $MQ.shaderV);
+    $MQ.gl.shaderSource(fragment, $MQ.shaderF);
     function checkCompileError(shader, type="") {
-        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-            let infoLog = gl.getShaderInfoLog(shader);
+        if (!$MQ.gl.getShaderParameter(shader, $MQ.gl.COMPILE_STATUS)) {
+            let infoLog = $MQ.gl.getShaderInfoLog(shader);
             let msg = `ERROR compiling ${type} shader!\n${infoLog}`;
             throw new Error(msg);
         }
     }
-    gl.compileShader(vertex);
+    $MQ.gl.compileShader(vertex);
     checkCompileError(vertex, 'vertex'); //throws error
-    gl.compileShader(fragment);
+    $MQ.gl.compileShader(fragment);
     checkCompileError(fragment, 'fragment'); //throws error
-    program = gl.createProgram();
-    gl.attachShader(program, vertex);
-    gl.attachShader(program, fragment);
-    gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-        console.error('ERROR linking shader program!', gl.getProgramInfoLog(program));
+    $MQ.program = $MQ.gl.createProgram();
+    $MQ.gl.attachShader($MQ.program, vertex);
+    $MQ.gl.attachShader($MQ.program, fragment);
+    $MQ.gl.linkProgram($MQ.program);
+    if (!$MQ.gl.getProgramParameter($MQ.program, $MQ.gl.LINK_STATUS)) {
+        console.error('ERROR linking shader program!', $MQ.gl.getProgramInfoLog($MQ.program));
         return;
     }
-    gl.validateProgram(program);
-    if (!gl.getProgramParameter(program, gl.VALIDATE_STATUS)) {
-        console.error('ERROR validating program!', glgetProgramInfoLog(program));
+    $MQ.gl.validateProgram($MQ.program);
+    if (!$MQ.gl.getProgramParameter($MQ.program, $MQ.gl.VALIDATE_STATUS)) {
+        console.error('ERROR validating program!', glgetProgramInfoLog($MQ.program));
         return;
     }
 
     // Uniforms
-    uniformLoc = {};
+    $MQ.uniformLoc = {};
     updateUniforms();
-    for (let uniform in uniformTypeVal) {
-        uniformLoc[uniform] = gl.getUniformLocation(program, uniform);
-        if (!uniformLoc[uniform])
+    for (let uniform in $MQ.uniformTypeVal) {
+        $MQ.uniformLoc[uniform] = $MQ.gl.getUniformLocation($MQ.program, uniform);
+        if (!$MQ.uniformLoc[uniform])
             console.error(`Could not locate uniform ${uniform} in the shaders!`);
     }
 
     // Attributes
-    cornerVertices = [
+    $MQ.cornerVertices = [
         // X, Y (×3)
         -1.0,-1.0,  1.0,-1.0,  1.0,1.0,
          1.0,1.0,  -1.0,1.0,  -1.0,-1.0,
     ];
-    let cornerVertexBufferObject = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, cornerVertexBufferObject);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cornerVertices), gl.STATIC_DRAW);
-    let positionAttribLocation = gl.getAttribLocation(program, 'corner');
-    gl.vertexAttribPointer(
+    let cornerVertexBufferObject = $MQ.gl.createBuffer();
+    $MQ.gl.bindBuffer($MQ.gl.ARRAY_BUFFER, cornerVertexBufferObject);
+    $MQ.gl.bufferData($MQ.gl.ARRAY_BUFFER, new Float32Array($MQ.cornerVertices), $MQ.gl.STATIC_DRAW);
+    let positionAttribLocation = $MQ.gl.getAttribLocation($MQ.program, 'corner');
+    $MQ.gl.vertexAttribPointer(
         positionAttribLocation,
         2, // number of elements per attribute
-        gl.FLOAT, // type of elements
-        gl.FALSE,
+        $MQ.gl.FLOAT, // type of elements
+        $MQ.gl.FALSE,
         2 * Float32Array.BYTES_PER_ELEMENT, // size of an individual vertex
         0 // offset from the beginning of a single vertex to this attribute
     );
-    gl.enableVertexAttribArray(positionAttribLocation);
+    $MQ.gl.enableVertexAttribArray(positionAttribLocation);
 
     // Textures
-    colorsTex = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, colorsTex);
-    gl.texImage2D(
-        gl.TEXTURE_2D, //target
+    $MQ.colorsTex = $MQ.gl.createTexture();
+    $MQ.gl.bindTexture($MQ.gl.TEXTURE_2D, $MQ.colorsTex);
+    $MQ.gl.texImage2D(
+        $MQ.gl.TEXTURE_2D, //target
         0,             //level
-        gl.RGB32F,     //internalformat
-        scene.n_iter,  //width
+        $MQ.gl.RGB32F,     //internalformat
+        $MQ.scene.n_iter,  //width
         1,             //height
         0,             //border
-        gl.RGB,        //format
-        gl.FLOAT,      //type
-        $MQ.paletteArr(scene.n_iter) //pixels
+        $MQ.gl.RGB,        //format
+        $MQ.gl.FLOAT,      //type
+        $MQ.paletteArr($MQ.scene.n_iter) //pixels
     );
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.bindTexture(gl.TEXTURE_2D, null);
+    $MQ.gl.texParameteri($MQ.gl.TEXTURE_2D, $MQ.gl.TEXTURE_WRAP_S, $MQ.gl.CLAMP_TO_EDGE);
+    $MQ.gl.texParameteri($MQ.gl.TEXTURE_2D, $MQ.gl.TEXTURE_WRAP_T, $MQ.gl.CLAMP_TO_EDGE);
+    $MQ.gl.texParameteri($MQ.gl.TEXTURE_2D, $MQ.gl.TEXTURE_MAG_FILTER, $MQ.gl.NEAREST);
+    $MQ.gl.texParameteri($MQ.gl.TEXTURE_2D, $MQ.gl.TEXTURE_MIN_FILTER, $MQ.gl.NEAREST);
+    $MQ.gl.bindTexture($MQ.gl.TEXTURE_2D, null);
 
     // Main render loop
-    drawScene();
+    $MQ.drawScene();
 }
 
 }
