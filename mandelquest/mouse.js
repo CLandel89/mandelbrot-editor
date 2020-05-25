@@ -46,6 +46,7 @@ function handleMouseDrag(ev) {
     scene.pos = scene.pos.sub(offsetR.smul(2*deltaX/canvas.width));
     scene.pos = scene.pos.add(offsetH.smul(2*deltaY/canvas.height));
     $MQ.drawScene();
+    $MQ.editor.update();
 
     lastMouseX = newX;
     lastMouseY = newY;
@@ -72,6 +73,7 @@ $MQ.handleWheel = function (ev) {
     // posN = pos + (1-factor) * (mX*oR + mY*oH)
     $MQ.scene.pos = pos.add($MQ.add(oR.smul(mX), oH.smul(mY)).smul(1-factor));
     $MQ.drawScene();
+    $MQ.editor.update();
 
     return false;
 }

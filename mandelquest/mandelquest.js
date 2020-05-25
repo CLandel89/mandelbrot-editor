@@ -16,8 +16,10 @@ for (let dep of [
     "fragment.glsl",
     "vertex.glsl",
     "complex",
+    "editor",
     "mouse",
     "palette",
+    "utils",
 ]) {
     //https://www.geeksforgeeks.org/how-to-include-a-javascript-file-in-another-javascript-file/
     let scriptTag = document.createElement('script');
@@ -28,30 +30,6 @@ for (let dep of [
 // Now that the "dependencies" were attached to the document body,
 // we can instruct the browser to kick off the init method AFTER loading.
 document.body.onload = function () { $MQ.init(); };
-
-$MQ.canvas = document.getElementById("mandelquest-canvas");
-$MQ.gl = (function () {
-    let gl = $MQ.canvas.getContext('webgl2');
-    if (!gl) {
-        alert('WebGL v2 not supported, falling back on experimental-webgl');
-        gl = $MQ.canvas.getContext('experimental-webgl');
-    }
-    if (!gl) {
-        alert('Your browser does not support WebGL');
-        return undefined;
-    }
-    return gl;
-}) ();
-
-function resizeCanvas() {
-    let nw = Math.floor(window.innerWidth*15/16);
-    let nh = Math.floor(window.innerHeight*15/16);
-    if (nw !== $MQ.canvas.width || nh !== $MQ.canvas.height) {
-        $MQ.canvas.width = nw;
-        $MQ.canvas.height = nh;
-        $MQ.gl.viewport(0, 0, $MQ.canvas.width, $MQ.canvas.height);
-    }
-}
 
 function updateUniforms() {
     let lenW, lenH; //length inside the complex pane of the fractal
@@ -68,9 +46,9 @@ function updateUniforms() {
     $MQ.uniformTypeVal = {
         'colors': ['1i', [0]], //TEXTURE0
         'n_iter': ['1i', [$MQ.scene.n_iter]],
-        'pert': ['2f', [$MQ.scene.pert.re, $MQ.scene.pert.im]],
+        'pert': ['2f', $MQ.scene.pert],
         'pos_part': ['1f', [$MQ.scene.pos_part]],
-        'pos': ['2f', $MQ.scene.pos],
+        'pos': ['2f', $MQ.scene.pos.sub($MQ.scene.pert)],
         'offsetR': ['2f', offsetR],
         'offsetH': ['2f', offsetH],
         'windowSz': ['2f', [$MQ.canvas.width, $MQ.canvas.height]],
@@ -80,7 +58,6 @@ function updateUniforms() {
 }
 
 $MQ.drawScene = function () {
-    resizeCanvas();
     updateUniforms();
     $MQ.gl.useProgram($MQ.program);
     $MQ.gl.activeTexture($MQ.gl.TEXTURE0);
@@ -118,7 +95,29 @@ $MQ.init = function ()
 
     // To get WebGL started, I followed WebGL Tutorial 01 by Indigo Code:
     // https://www.youtube.com/watch?v=kB0ZVUrI4Aw
-    resizeCanvas();
+    $MQ.canvas = document.getElementById($MQ.canvasId);
+    $MQ.gl = $MQ.canvas.getContext('webgl2');
+    if (!$MQ.gl) {
+        alert('WebGL v2 not supported, falling back on experimental-webgl');
+        $MQ.gl = $MQ.canvas.getContext('experimental-webgl');
+    }
+    if (!$MQ.gl) {
+        alert('Your browser does not support WebGL');
+        return undefined;
+    }
+    $MQ.gl.viewport(0, 0, $MQ.canvas.width, $MQ.canvas.height);
+    {
+        //resize event handling https://stackoverflow.com/a/5825523
+        let cWidth = $MQ.canvas.width, cHeight = $MQ.canvas.height;
+        setInterval(function () {
+            if ($MQ.canvas.width !== cWidth || $MQ.canvas.height !== cHeight) {
+                cWidth = $MQ.canvas.width;
+                cHeight = $MQ.canvas.height;
+                $MQ.gl.viewport(0, 0, $MQ.canvas.width, $MQ.canvas.height);
+                $MQ.drawScene();
+            }
+        }, 300);
+    }
     $MQ.gl.clearColor(0.0, 0.0, 0.0, 1.0);
     $MQ.gl.clear($MQ.gl.COLOR_BUFFER_BIT | $MQ.gl.DEPTH_BUFFER_BIT);
     //⇒mouse.js
@@ -208,6 +207,7 @@ $MQ.init = function ()
 
     // Main render loop
     $MQ.drawScene();
+    $MQ.editor.init();
 }
 
 }

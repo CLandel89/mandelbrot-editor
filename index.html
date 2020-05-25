@@ -8,11 +8,25 @@
 
     <body>
 
-        <canvas id="mandelquest-canvas" width="800" height="600">
-            HTML5 Canvas is not supported in your browser, sorry.
-        </canvas>
+        <table>
+            <tr>
+                <td>
+                    <canvas id="mandelquest-canvas" width="400" height="300">
+                        HTML5 Canvas is not supported in your browser, sorry.
+                    </canvas>
+                </td>
+                <td>
+                    <a id="mandelquest-panel"></a>
+                </td>
+            </tr>
+        </table>
 
         <script src="mandelquest/mandelquest.js"></script>
+        <script>
+            $MandelQuest.canvasId="mandelquest-canvas";
+            $MandelQuest.panelId="mandelquest-panel";
+        </script>
+
     </body>
 
 </html>
