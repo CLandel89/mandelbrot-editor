@@ -51,8 +51,6 @@ function updateUniforms() {
         'pos': ['2f', $MQ.scene.pos.sub($MQ.scene.pert)],
         'offsetR': ['2f', offsetR],
         'offsetH': ['2f', offsetH],
-        'windowSz': ['2f', [$MQ.canvas.width, $MQ.canvas.height]],
-        'ANTIALIASING': ['1i', [1]], //1 means no antialiasing
     };
     $MQ.uniformTypeVal = $MQ.uniformTypeVal;
 }

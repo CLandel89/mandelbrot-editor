@@ -2,8 +2,7 @@ $MandelQuest.shaderF = `#version 300 es
 precision mediump float;
 
 in vec2 posV;
-flat in vec2 pixelSz;
-uniform int n_iter, ANTIALIASING;
+uniform int n_iter;
 uniform float pos_part;
 uniform sampler2D colors;
 uniform vec2 pert;
@@ -34,20 +33,6 @@ vec3 mandel(vec2 pos) {
 }
 
 void main() {
-    // Antialiasing (calculate AA^2 pixels, so if AA=2 => 4x antialiasing)
-    vec3 color = vec3(0, 0, 0);
-    int n;
-    for (n=0; n<ANTIALIASING*ANTIALIASING; n++) {
-        vec2 pos = (
-            posV
-            + vec2(
-                float(n%ANTIALIASING) * float(pixelSz.x)/float(ANTIALIASING),
-                float(n/ANTIALIASING) * float(pixelSz.y)/float(ANTIALIASING)
-            )
-        );
-        color += mandel(pos);
-    }
-    color /= float(ANTIALIASING*ANTIALIASING);
-    out_Color = vec4(color, 1);
+    out_Color = vec4(mandel(posV), 1);
 }
 `;
