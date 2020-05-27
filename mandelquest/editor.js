@@ -22,6 +22,41 @@ $e.init = function () {
             $MQ.drawScene();
         }
     });
+    $e.trans1 = elem({
+        E: 'input',
+        type: 'text',
+        size: 3,
+        value: 0,
+        onkeyup: function () {
+            let value = Math.floor(Number(this.value));
+            if (! (value <= $MQ.scene.n_iter && value >= 0))
+                return;
+            $MQ.scene.trans1 = value;
+            $MQ.drawScene();
+        },
+    });
+    $e.trans2 = elem({
+        E: 'input',
+        type: 'text',
+        size: 3,
+        value: 0,
+        onkeyup: function () {
+            let value = Math.floor(Number(this.value));
+            if (! (value <= $MQ.scene.n_iter && value >= $MQ.scene.trans1))
+                return;
+            $MQ.scene.trans2 = value;
+            $MQ.drawScene();
+        },
+    });
+    $e.bg = elem({E: 'input', type: 'checkbox'});
+    $e.bgPhase = 0.0;
+    setInterval(function () {
+        if ($e.bg.checked) {
+            $e.bgPhase = ($e.bgPhase + 100/4000*2*Math.PI) % (2*Math.PI);
+            $MQ.scene.bgPhase = (Math.cos($e.bgPhase)+1) / 2;
+            $MQ.drawScene();
+        }
+    }, 100);
     $e.φ = new Range({min:-Math.PI, max:Math.PI, step:2*Math.PI/360, value:$MQ.scene.φ});
     $e.φ.listeners.push(value => {
         $MQ.scene.φ = value;
@@ -132,6 +167,32 @@ $e.init = function () {
                 C: [
                     {E: 'td', T: 'N iter'},
                     {E: 'td', C: [$e.n_iter]}
+                ]
+            },
+            {
+                E: 'tr',
+                C: [
+                    {E: 'td', T: 'Transp'},
+                    {
+                        E: 'td',
+                        C: [$e.trans1, $e.trans2]
+                    }
+                ]
+            },
+            {
+                E: 'tr',
+                C: [
+                    {
+                        E: 'td',
+                        C: [
+                            {
+                                E: 'label',
+                                T: 'phase BG',
+                                'for': $e.bg,
+                            },
+                        ]
+                    },
+                    {E: 'td', C: [$e.bg]},
                 ]
             },
             {

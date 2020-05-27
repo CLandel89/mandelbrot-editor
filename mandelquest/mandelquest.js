@@ -44,6 +44,7 @@ function updateUniforms() {
     let offsetR = $MQ.fromPolar(lenW, $MQ.scene.φ);
     let offsetH = $MQ.fromPolar(lenH, $MQ.scene.φ+Math.PI/2);
     $MQ.uniformTypeVal = {
+        'bgPhase': ['1f', [$MQ.scene.bgPhase]],
         'colors': ['1i', [0]], //TEXTURE0
         'cut': ['1f', [$MQ.scene.cut]],
         'julia': ['1f', [$MQ.scene.julia]],
@@ -52,6 +53,8 @@ function updateUniforms() {
         'pos': ['2f', $MQ.scene.pos.sub($MQ.scene.pert)],
         'offsetR': ['2f', offsetR],
         'offsetH': ['2f', offsetH],
+        'trans1': ['1i', [$MQ.scene.trans1]],
+        'trans2': ['1i', [$MQ.scene.trans2]],
     };
     $MQ.uniformTypeVal = $MQ.uniformTypeVal;
 }
@@ -82,6 +85,9 @@ $MQ.init = function ()
     if (!$MQ.scene)
         // this controls everything you see in the canvas
         $MQ.scene = {
+            bgPhase: 1.0,
+            trans1: 0,
+            trans2: 0,
             n_iter: 170,
             n_iter_prev: null,
             pos: new $MQ.Complex(0,0),

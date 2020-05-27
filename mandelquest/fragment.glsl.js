@@ -2,8 +2,8 @@ $MandelQuest.shaderF = `#version 300 es
 precision mediump float;
 
 in vec2 posV, screenV;
-uniform int n_iter;
-uniform float cut, julia;
+uniform int n_iter, trans1, trans2;
+uniform float bgPhase, cut, julia;
 uniform sampler2D colors;
 uniform vec2 pert, pos;
 out vec4 out_Color;
@@ -27,12 +27,21 @@ vec3 color() {
             break;
         }
     }
+    if (n < trans1)
+        return vec3(bgPhase, bgPhase, bgPhase);
+    vec3 result;
     if (n == n_iter)
         //the corresponding n could be bigger - or the calculation could converge
         //(there is no way to know this for every spot in the complex pane)
-        return vec3(0,0,0);
+        result = vec3(0,0,0);
     else
-        return texture(colors, vec2(float(n)/float(n_iter), 0.0)).rgb;
+        result = texture(colors, vec2(float(n)/float(n_iter), 0.0)).rgb;
+    if (n >= trans1 && n < trans2) {
+        float alpha = float(n-trans1) / float(trans2-trans1);
+        result *= alpha;
+        result += (1.0-alpha) * vec3(bgPhase, bgPhase, bgPhase);
+    }
+    return result;
 }
 
 void main() {
