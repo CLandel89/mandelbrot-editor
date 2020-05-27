@@ -13,14 +13,14 @@ vec3 color() {
     //(To assert that out_Color is always set, this is put in a function).
     int n;
     vec2 z = (1.0-julia)*posV + julia*screenV;
-    vec2 add = (1.0-julia)*posV + pert + julia*pos;
+    vec2 c = (1.0-julia)*posV + pert + julia*pos;
     float cut_quad = cut * cut * (screenV.x*screenV.x + screenV.y*screenV.y);
     cut_quad = cut_quad * cut_quad; //this looks a bit better (visually)
     for (n=0; n<n_iter; n++) {
-        //complex z^2 + add
+        //complex z^2 + c
         //(z.x+z.y)^2 = z.x^2 + 2*z.x*(z.y*i) + (z.y*i)^2
         z = z.x*z.x*vec2(1,0) + 2.0*z.x*z.y*vec2(0,1) - z.y*z.y*vec2(1,0);
-        z += add;
+        z += c;
         //complex ||z||>2
         if (z.x*z.x + z.y*z.y > 4.0 - 4.0*cut_quad) {
             //n is now corresponding
