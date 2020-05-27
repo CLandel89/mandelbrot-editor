@@ -56,6 +56,24 @@ $e.init = function () {
         $MQ.scene.l = value;
         $MQ.drawScene();
     });
+    $e.lp = new elem({
+        E: 'input',
+        type: 'button',
+        value: '+',
+        onclick: function () {
+            $MQ.scene.l /= 33/32;
+            $MQ.drawScene();
+        }
+    });
+    $e.lm = new elem({
+        E: 'input',
+        type: 'button',
+        value: '-',
+        onclick: function () {
+            $MQ.scene.l *= 33/32;
+            $MQ.drawScene();
+        }
+    });
     $e.sizeWT = elem({
         E: 'input',
         type: 'text',
@@ -90,6 +108,22 @@ $e.init = function () {
         $MQ.scene.pert.im = value;
         $MQ.drawScene();
     });
+    $e.julia = new Range({min:0, max:1, step:1/256});
+    $e.julia.listeners.push(value => {
+        $MQ.scene.julia = value;
+        $MQ.drawScene();
+    });
+    $e.julia1 = elem({
+        E: 'input',
+        type: 'button',
+        value: '1',
+        onclick: function () {$e.julia.change(1);},
+    });
+    $e.cut = new Range({min:0, max:1, step:1/256});
+    $e.cut.listeners.push(value => {
+        $MQ.scene.cut = value;
+        $MQ.drawScene();
+    });
     $e.panel = elem({
         E: 'table',
         C: [
@@ -121,7 +155,7 @@ $e.init = function () {
                     {
                         E: 'td',
                         C: [
-                            $e.l.text, $e.l.reset,
+                            $e.l.text, $e.l.reset, $e.lp, $e.lm,
                             {E: 'br'},
                             $e.l.range
                         ]
@@ -172,6 +206,34 @@ $e.init = function () {
                             $e.pertIm.text, $e.pertIm.reset,
                             {E: 'br'},
                             $e.pertIm.range,
+                        ]
+                    }
+                ]
+            },
+            {
+                E: 'tr',
+                C: [
+                    {E: 'td', T: 'Julia'},
+                    {
+                        E: 'td',
+                        C: [
+                            $e.julia.text, $e.julia.reset, $e.julia1,
+                            {E: 'br'},
+                            $e.julia.range,
+                        ]
+                    }
+                ]
+            },
+            {
+                E: 'tr',
+                C: [
+                    {E: 'td', T: 'Cut'},
+                    {
+                        E: 'td',
+                        C: [
+                            $e.cut.text, $e.cut.reset,
+                            {E: 'br'},
+                            $e.cut.range,
                         ]
                     }
                 ]

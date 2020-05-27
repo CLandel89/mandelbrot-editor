@@ -45,9 +45,10 @@ function updateUniforms() {
     let offsetH = $MQ.fromPolar(lenH, $MQ.scene.φ+Math.PI/2);
     $MQ.uniformTypeVal = {
         'colors': ['1i', [0]], //TEXTURE0
+        'cut': ['1f', [$MQ.scene.cut]],
+        'julia': ['1f', [$MQ.scene.julia]],
         'n_iter': ['1i', [$MQ.scene.n_iter]],
         'pert': ['2f', $MQ.scene.pert],
-        'pos_part': ['1f', [$MQ.scene.pos_part]],
         'pos': ['2f', $MQ.scene.pos.sub($MQ.scene.pert)],
         'offsetR': ['2f', offsetR],
         'offsetH': ['2f', offsetH],
@@ -84,10 +85,11 @@ $MQ.init = function ()
             n_iter: 170,
             n_iter_prev: null,
             pos: new $MQ.Complex(0,0),
-            pos_part: 1.0,
             pert: new $MQ.Complex(0,0), // add perturbation
             φ: 0.0, // turn the scene around
             l: 2.0, // the length (in the fractal pane) from pos to the nearest edge of the canvas
+            julia: 0.0, // you can transform the scene into a Julia set - partly or whole
+            cut: 0.0, // you can concentrate the fractals around the middle of the canvas
         };
     $MQ.scene = $MQ.scene;
 

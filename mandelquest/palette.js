@@ -7,7 +7,7 @@ let $MQ = $MandelQuest;
 $MQ.palette = function* (n_iter, colors) {
     if (!colors)
         colors = [
-            [0,0,0],
+            [1,1,1],
             [0,0,1],
             [0,1,0],
             [1,0,0],
