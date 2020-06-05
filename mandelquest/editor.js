@@ -3,22 +3,24 @@
 {
 
 let $MQ = $MandelQuest;
-$MQ.editor = {};
+if (!$MQ.editor) $MQ.editor = {};
 let $e = $MQ.editor;
 
 $e.init = function () {
+    $e.initTree();
     let elem = $MQ.utils.elem;
     let Range = $MQ.utils.Range;
+    function fractal () {return $MQ.scene.fractals[0];};
     $e.n_iter = elem({
         E: 'input',
         type: 'text',
         size: 3,
-        value: $MQ.scene.n_iter,
+        value: fractal().n_iter,
         onkeyup: function () {
             let value = Math.floor(Number(this.value));
             if (! (value <= 10000 && value >= 0))
                 return;
-            $MQ.scene.n_iter = value;
+            fractal().n_iter = value;
             $MQ.drawScene();
         }
     });
@@ -29,9 +31,9 @@ $e.init = function () {
         value: 0,
         onkeyup: function () {
             let value = Math.floor(Number(this.value));
-            if (! (value <= $MQ.scene.n_iter && value >= 0))
+            if (! (value <= fractal().n_iter && value >= 0))
                 return;
-            $MQ.scene.trans1 = value;
+            fractal().trans1 = value;
             $MQ.drawScene();
         },
     });
@@ -42,9 +44,9 @@ $e.init = function () {
         value: 0,
         onkeyup: function () {
             let value = Math.floor(Number(this.value));
-            if (! (value <= $MQ.scene.n_iter && value >= $MQ.scene.trans1))
+            if (! (value <= fractal().n_iter && value >= fractal().trans1))
                 return;
-            $MQ.scene.trans2 = value;
+            fractal().trans2 = value;
             $MQ.drawScene();
         },
     });
@@ -57,9 +59,9 @@ $e.init = function () {
             $MQ.drawScene();
         }
     }, 100);
-    $e.φ = new Range({min:-Math.PI, max:Math.PI, step:2*Math.PI/360, value:$MQ.scene.φ});
+    $e.φ = new Range({min:-Math.PI, max:Math.PI, step:2*Math.PI/360, value:fractal().φ});
     $e.φ.listeners.push(value => {
-        $MQ.scene.φ = value;
+        fractal().φ = value;
         $MQ.drawScene();
     })
     $e.posRe = elem({
@@ -70,7 +72,7 @@ $e.init = function () {
             let value = Number(this.value);
             if (! (value <= 2 && value >= -2))
                 return;
-            $MQ.scene.pos.re = value;
+            fractal().pos.re = value;
             $MQ.drawScene();
         },
     });
@@ -82,13 +84,13 @@ $e.init = function () {
             let value = Number(this.value);
             if (! (value <= 2 && value >= -2))
                 return;
-            $MQ.scene.pos.im = value;
+            fractal().pos.im = value;
             $MQ.drawScene();
         },
     });
-    $e.l = new Range({min:2**-20, max:2, step:1/256, value:$MQ.scene.l});
+    $e.l = new Range({min:2**-20, max:2, step:1/256, value:fractal().l});
     $e.l.listeners.push(value => {
-        $MQ.scene.l = value;
+        fractal().l = value;
         $MQ.drawScene();
     });
     $e.lp = new elem({
@@ -96,7 +98,7 @@ $e.init = function () {
         type: 'button',
         value: '+',
         onclick: function () {
-            $MQ.scene.l /= 33/32;
+            fractal().l /= 33/32;
             $MQ.drawScene();
         }
     });
@@ -105,7 +107,7 @@ $e.init = function () {
         type: 'button',
         value: '-',
         onclick: function () {
-            $MQ.scene.l *= 33/32;
+            fractal().l *= 33/32;
             $MQ.drawScene();
         }
     });
@@ -119,6 +121,7 @@ $e.init = function () {
             if (! (value <= 1024 && value >= 64))
                 return;
             $MQ.canvas.width = value;
+            fractal().width = value;
         },
     });
     $e.sizeHT = elem({
@@ -131,21 +134,22 @@ $e.init = function () {
             if (! (value <= 1024 && value >= 64))
                 return;
             $MQ.canvas.height = value;
+            fractal().height = value;
         },
     });
     $e.pertRe = new Range({min:-2, max:2, step:1/256});
     $e.pertRe.listeners.push(value => {
-        $MQ.scene.pert.re = value;
+        fractal().pert.re = value;
         $MQ.drawScene();
     });
     $e.pertIm = new Range({min:-2, max:2, step:1/256});
     $e.pertIm.listeners.push(value => {
-        $MQ.scene.pert.im = value;
+        fractal().pert.im = value;
         $MQ.drawScene();
     });
     $e.julia = new Range({min:0, max:1, step:1/256});
     $e.julia.listeners.push(value => {
-        $MQ.scene.julia = value;
+        fractal().julia = value;
         $MQ.drawScene();
     });
     $e.julia1 = elem({
@@ -156,7 +160,7 @@ $e.init = function () {
     });
     $e.cut = new Range({min:0, max:1, step:1/256});
     $e.cut.listeners.push(value => {
-        $MQ.scene.cut = value;
+        fractal().cut = value;
         $MQ.drawScene();
     });
     $e.panel = elem({
@@ -305,13 +309,28 @@ $e.init = function () {
 };
 
 $e.update = function () {
-    let pos = $MQ.scene.pos, l = $MQ.scene.l;
-    if ($e.posRe && $e.posIm && $e.l) {
-        $e.posRe.value = pos.re;
-        $e.posIm.value = pos.im;
-        $e.l.text.value = l;
-        $e.l.range.value = l;
-    }
+    if (!$e.panel) return;
+    let fractal = $MQ.scene.fractals[0];
+    $e.n_iter.value = fractal.n_iter;
+    $e.trans1.value = fractal.trans1;
+    $e.trans2.value = fractal.trans2;
+    $e.φ.value = fractal.φ;
+    $e.l.text.value = fractal.l;
+    $e.l.range.value = fractal.l;
+    $e.posRe.value = fractal.pos.re;
+    $e.posIm.value = fractal.pos.im;
+    $e.sizeWT.value = fractal.width;
+    $MQ.canvas.width = fractal.width;
+    $e.sizeHT.value = fractal.height;
+    $MQ.canvas.height = fractal.height;
+    $e.pertRe.text.value = fractal.pert.re;
+    $e.pertRe.range.value = fractal.pert.re;
+    $e.pertIm.text.value = fractal.pert.im;
+    $e.pertIm.range.value = fractal.pert.im;
+    $e.julia.text.value = fractal.julia;
+    $e.julia.range.value = fractal.julia;
+    $e.cut.text.value = fractal.cut;
+    $e.cut.range.value = fractal.cut;
 };
 
 }

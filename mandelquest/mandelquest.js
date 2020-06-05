@@ -17,8 +17,10 @@ for (let dep of [
     "vertex.glsl",
     "complex",
     "editor",
+    "fractal",
     "mouse",
     "palette",
+    "tree",
     "utils",
 ]) {
     //https://www.geeksforgeeks.org/how-to-include-a-javascript-file-in-another-javascript-file/
@@ -31,36 +33,36 @@ for (let dep of [
 // we can instruct the browser to kick off the init method AFTER loading.
 document.body.onload = function () { $MQ.init(); };
 
-function updateUniforms() {
+function updateUniforms(fractal) {
     let lenW, lenH; //length inside the complex pane of the fractal
     if ($MQ.canvas.height > $MQ.canvas.width) {
-        lenW = $MQ.scene.l;
-        lenH = ($MQ.canvas.height/$MQ.canvas.width) * $MQ.scene.l;
+        lenW = fractal.l;
+        lenH = ($MQ.canvas.height/$MQ.canvas.width) * fractal.l;
     }
     else {
-        lenW = ($MQ.canvas.width/$MQ.canvas.height) * $MQ.scene.l;
-        lenH = $MQ.scene.l;
+        lenW = ($MQ.canvas.width/$MQ.canvas.height) * fractal.l;
+        lenH = fractal.l;
     }
-    let offsetR = $MQ.fromPolar(lenW, $MQ.scene.φ);
-    let offsetH = $MQ.fromPolar(lenH, $MQ.scene.φ+Math.PI/2);
+    let offsetR = $MQ.fromPolar(lenW, fractal.φ);
+    let offsetH = $MQ.fromPolar(lenH, fractal.φ+Math.PI/2);
     $MQ.uniformTypeVal = {
         'bgPhase': ['1f', [$MQ.scene.bgPhase]],
         'colors': ['1i', [0]], //TEXTURE0
-        'cut': ['1f', [$MQ.scene.cut]],
-        'julia': ['1f', [$MQ.scene.julia]],
-        'n_iter': ['1i', [$MQ.scene.n_iter]],
-        'pert': ['2f', $MQ.scene.pert],
-        'pos': ['2f', $MQ.scene.pos.sub($MQ.scene.pert)],
+        'cut': ['1f', [fractal.cut]],
+        'julia': ['1f', [fractal.julia]],
+        'n_iter': ['1i', [fractal.n_iter]],
+        'pert': ['2f', fractal.pert],
+        'pos': ['2f', fractal.pos.sub(fractal.pert)],
         'offsetR': ['2f', offsetR],
         'offsetH': ['2f', offsetH],
-        'trans1': ['1i', [$MQ.scene.trans1]],
-        'trans2': ['1i', [$MQ.scene.trans2]],
+        'trans1': ['1i', [fractal.trans1]],
+        'trans2': ['1i', [fractal.trans2]],
     };
     $MQ.uniformTypeVal = $MQ.uniformTypeVal;
 }
 
 $MQ.drawScene = function () {
-    updateUniforms();
+    updateUniforms($MQ.scene.fractals[0]);
     $MQ.gl.useProgram($MQ.program);
     $MQ.gl.activeTexture($MQ.gl.TEXTURE0);
     $MQ.gl.bindTexture($MQ.gl.TEXTURE_2D, $MQ.colorsTex);
@@ -82,22 +84,12 @@ $MQ.drawScene = function () {
 
 $MQ.init = function ()
 {
-    if (!$MQ.scene)
-        // this controls everything you see in the canvas
-        $MQ.scene = {
-            bgPhase: 1.0,
-            trans1: 0,
-            trans2: 0,
-            n_iter: 170,
-            n_iter_prev: null,
-            pos: new $MQ.Complex(0,0),
-            pert: new $MQ.Complex(0,0), // add perturbation
-            φ: 0.0, // turn the scene around
-            l: 2.0, // the length (in the fractal pane) from pos to the nearest edge of the canvas
-            julia: 0.0, // you can transform the scene into a Julia set - partly or whole
-            cut: 0.0, // you can concentrate the fractals around the middle of the canvas
-        };
-    $MQ.scene = $MQ.scene;
+    // $MQ.scene controls everything you see in the canvas
+    if (!$MQ.scene) $MQ.scene = {};
+    // default values
+    if (! ('bgPhase' in $MQ.scene)) $MQ.scene.bgPhase = 1.0;
+    if (! ('fractals' in $MQ.scene)) $MQ.scene.fractals = [new $MQ.Fractal()];
+    if (! ('n_iter_prev' in $MQ.scene)) $MQ.scene.n_iter_prev = null;
 
     // To get WebGL started, I followed WebGL Tutorial 01 by Indigo Code:
     // https://www.youtube.com/watch?v=kB0ZVUrI4Aw
@@ -164,7 +156,7 @@ $MQ.init = function ()
 
     // Uniforms
     $MQ.uniformLoc = {};
-    updateUniforms();
+    updateUniforms($MQ.scene.fractals[0]);
     for (let uniform in $MQ.uniformTypeVal) {
         $MQ.uniformLoc[uniform] = $MQ.gl.getUniformLocation($MQ.program, uniform);
         if (!$MQ.uniformLoc[uniform])
@@ -194,16 +186,17 @@ $MQ.init = function ()
     // Textures
     $MQ.colorsTex = $MQ.gl.createTexture();
     $MQ.gl.bindTexture($MQ.gl.TEXTURE_2D, $MQ.colorsTex);
+    let n_iter = $MQ.scene.fractals[0].n_iter;
     $MQ.gl.texImage2D(
-        $MQ.gl.TEXTURE_2D, //target
-        0,             //level
-        $MQ.gl.RGB32F,     //internalformat
-        $MQ.scene.n_iter,  //width
-        1,             //height
-        0,             //border
-        $MQ.gl.RGB,        //format
-        $MQ.gl.FLOAT,      //type
-        $MQ.paletteArr($MQ.scene.n_iter) //pixels
+        $MQ.gl.TEXTURE_2D,                //target
+        0,                                //level
+        $MQ.gl.RGB32F,                    //internalformat
+        n_iter,     //width
+        1,                                //height
+        0,                                //border
+        $MQ.gl.RGB,                       //format
+        $MQ.gl.FLOAT,                     //type
+        $MQ.paletteArr(n_iter)  //pixels
     );
     $MQ.gl.texParameteri($MQ.gl.TEXTURE_2D, $MQ.gl.TEXTURE_WRAP_S, $MQ.gl.CLAMP_TO_EDGE);
     $MQ.gl.texParameteri($MQ.gl.TEXTURE_2D, $MQ.gl.TEXTURE_WRAP_T, $MQ.gl.CLAMP_TO_EDGE);
@@ -213,7 +206,10 @@ $MQ.init = function ()
 
     // Main render loop
     $MQ.drawScene();
-    $MQ.editor.init();
+    if ($MQ.panelId && $MQ.treeId) {
+        // Are the panel and tree also desired or just the canvas?
+        $MQ.editor.init();
+    }
 }
 
 }

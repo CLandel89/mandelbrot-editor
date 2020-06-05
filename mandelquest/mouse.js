@@ -42,9 +42,9 @@ function handleMouseDrag(ev) {
     //Note the differences between canvas and OpenGL:
     //(0,0): upper left corner vs. middle
     //Y axis: points downwards vs. upwards
-    let scene = $MQ.scene, canvas = $MQ.canvas;
-    scene.pos = scene.pos.sub(offsetR.smul(2*deltaX/canvas.width));
-    scene.pos = scene.pos.add(offsetH.smul(2*deltaY/canvas.height));
+    let fractal = $MQ.scene.fractals[0], canvas = $MQ.canvas;
+    fractal.pos = fractal.pos.sub(offsetR.smul(2*deltaX/canvas.width));
+    fractal.pos = fractal.pos.add(offsetH.smul(2*deltaY/canvas.height));
     $MQ.drawScene();
     $MQ.editor.update();
 
@@ -56,8 +56,8 @@ $MQ.handleWheel = function (ev) {
     //https://stackoverflow.com/a/10313183
 
     const factor = 1.25 ** ev.deltaY;
-    $MQ.scene.l *= factor;
-    const pos = $MQ.scene.pos;
+    $MQ.scene.fractals[0].l *= factor;
+    const pos = $MQ.scene.fractals[0].pos;
     //calculate the position of the mouse cursor in the complex pane
     const oR = $MQ.uniformTypeVal['offsetR'][1];
     const oH = $MQ.uniformTypeVal['offsetH'][1];
@@ -71,7 +71,7 @@ $MQ.handleWheel = function (ev) {
     //and at the same time  posM = posN + factor*(mX*oR + mY*oH)
     // pos + mX*oR + mY*oH = posN + factor*(mX*oR + mY*oH)
     // posN = pos + (1-factor) * (mX*oR + mY*oH)
-    $MQ.scene.pos = pos.add($MQ.add(oR.smul(mX), oH.smul(mY)).smul(1-factor));
+    $MQ.scene.fractals[0].pos = pos.add($MQ.add(oR.smul(mX), oH.smul(mY)).smul(1-factor));
     $MQ.drawScene();
     $MQ.editor.update();
 
