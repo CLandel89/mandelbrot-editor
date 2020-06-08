@@ -31,7 +31,17 @@ for (let dep of [
 
 // Now that the "dependencies" were attached to the document body,
 // we can instruct the browser to kick off the init method AFTER loading.
-document.body.onload = function () { $MQ.init(); };
+if (document.body.onload) {
+    let oldOnload = document.body.onload;
+    document.body.onload = function () {
+        $MQ.init();
+        oldOnload();
+    };
+}
+else
+    document.body.onload = function () {
+        $MQ.init();
+    };
 
 function updateUniforms(fractal) {
     let lenW, lenH; //length inside the complex pane of the fractal
