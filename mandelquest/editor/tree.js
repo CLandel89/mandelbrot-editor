@@ -3,12 +3,11 @@
 {
 
 let $MQ = $MandelQuest;
+let $e = $MQ.editor;
 
-if (!$MQ.editor) $MQ.editor = {};
-
-$MQ.editor.initTree = function ()
+$e.initTree = function ()
 {
-    let $e = $MQ.editor, $u = $MQ.utils;
+    let $u = $MQ.utils;
 
     function stylizeButton (button) {
         button.style.padding = '0px 4px';
@@ -24,7 +23,7 @@ $MQ.editor.initTree = function ()
         $MQ.scene.fractals[0] = fractal;
         fractal.tree.elemLabel.style.fontWeight = 900;
         $MQ.drawScene();
-        $MQ.editor.update();
+        $e.update();
     }
 
     function createFractalButton (parentTree) {

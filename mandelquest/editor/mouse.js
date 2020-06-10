@@ -9,21 +9,21 @@
 
 {
 
-let $MQ = $MandelQuest;
+let $MQ = $MandelQuest, $e = $MQ.editor;
 
 let mouseDown=false, lastMouseX=null, lastMouseY=null;
 
-$MQ.handleMouseDown = function (ev) {
+$e.handleMouseDown = function (ev) {
     mouseDown = true;
     lastMouseX = ev.clientX;
     lastMouseY = ev.clientY;
 }
 
-$MQ.handleMouseUp = function (ev) {
+$e.handleMouseUp = function (ev) {
     mouseDown = false;
 }
 
-$MQ.handleMouseMove = function (ev) {
+$e.handleMouseMove = function (ev) {
     if (mouseDown) {
         handleMouseDrag(ev);
         return;
@@ -52,7 +52,7 @@ function handleMouseDrag(ev) {
     lastMouseY = newY;
 }
 
-$MQ.handleWheel = function (ev) {
+$e.handleWheel = function (ev) {
     //https://stackoverflow.com/a/10313183
 
     const factor = 1.25 ** ev.deltaY;
@@ -73,7 +73,7 @@ $MQ.handleWheel = function (ev) {
     // posN = pos + (1-factor) * (mX*oR + mY*oH)
     $MQ.scene.fractals[0].pos = pos.add($MQ.add(oR.smul(mX), oH.smul(mY)).smul(1-factor));
     $MQ.drawScene();
-    $MQ.editor.update();
+    $e.update();
 
     return false;
 }

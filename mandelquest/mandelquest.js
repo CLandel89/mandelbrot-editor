@@ -7,20 +7,21 @@
 // however Firefox 76 doesn't like that when opening the page from local files.
 
 if (window.$MandelQuest) throw new Error("window.$MandelQuest already set.");
-window.$MandelQuest = {}; //that's all, folks.
+window.$MandelQuest = {};
+$MandelQuest.editor = {};
 
-let $MQ = $MandelQuest; //shorten this inside file-wide scopes
+let $MQ = $MandelQuest, $e = $MQ.editor; //shorten these inside file-wide scopes
 
 // Include local "dependecies", i.e. the other JS files in the project.
 for (let dep of [
     "fragment.glsl",
     "vertex.glsl",
     "complex",
-    "editor",
+    "editor/editor",
+    "editor/mouse",
+    "editor/tree",
     "fractal",
-    "mouse",
     "palette",
-    "tree",
     "utils",
 ]) {
     //https://www.geeksforgeeks.org/how-to-include-a-javascript-file-in-another-javascript-file/
@@ -31,17 +32,10 @@ for (let dep of [
 
 // Now that the "dependencies" were attached to the document body,
 // we can instruct the browser to kick off the init method AFTER loading.
-if (document.body.onload) {
-    let oldOnload = document.body.onload;
-    document.body.onload = function () {
-        $MQ.init();
-        oldOnload();
-    };
-}
-else
-    document.body.onload = function () {
-        $MQ.init();
-    };
+window.addEventListener(
+    'load',
+    () => { $MQ.init(); },
+);
 
 function updateUniforms(fractal) {
     let lenW, lenH; //length inside the complex pane of the fractal
@@ -128,11 +122,6 @@ $MQ.init = function ()
     }
     $MQ.gl.clearColor(0.0, 0.0, 0.0, 1.0);
     $MQ.gl.clear($MQ.gl.COLOR_BUFFER_BIT | $MQ.gl.DEPTH_BUFFER_BIT);
-    //⇒mouse.js
-    $MQ.canvas.onmousedown = $MQ.handleMouseDown;
-    document.onmouseup = $MQ.handleMouseUp;
-    document.onmousemove = $MQ.handleMouseMove;
-    $MQ.canvas.addEventListener('wheel', $MQ.handleWheel);
 
     // Shaders
     let vertex = $MQ.gl.createShader($MQ.gl.VERTEX_SHADER);
@@ -215,10 +204,13 @@ $MQ.init = function ()
     $MQ.gl.bindTexture($MQ.gl.TEXTURE_2D, null);
 
     // Main render loop
+    // (just returning from the function in this case)
     $MQ.drawScene();
-    if ($MQ.panelId && $MQ.treeId) {
-        // Are the panel and tree also desired or just the canvas?
-        $MQ.editor.init();
+    // Are the panel and tree also desired or just the canvas?
+    $e.enabled = $MQ.panelId && $MQ.treeId;
+    if ($e.enabled) {
+        //
+        $e.init();
     }
 }
 

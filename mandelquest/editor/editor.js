@@ -2,12 +2,19 @@
 
 {
 
-let $MQ = $MandelQuest;
-if (!$MQ.editor) $MQ.editor = {};
-let $e = $MQ.editor;
+let $MQ = $MandelQuest, $e = $MQ.editor;
 
 $e.init = function () {
     $e.initTree();
+    initElems();
+    //⇒editor/mouse.js
+    $MQ.canvas.onmousedown = $e.handleMouseDown;
+    document.onmouseup = $e.handleMouseUp;
+    document.onmousemove = $e.handleMouseMove;
+    $MQ.canvas.addEventListener('wheel', $e.handleWheel);
+};
+
+function initElems () {
     let elem = $MQ.utils.elem;
     let Range = $MQ.utils.Range;
     function fractal () {return $MQ.scene.fractals[0];};
