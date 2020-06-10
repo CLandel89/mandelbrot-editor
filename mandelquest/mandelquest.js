@@ -9,8 +9,9 @@
 if (window.$MandelQuest) throw new Error("window.$MandelQuest already set.");
 window.$MandelQuest = {};
 $MandelQuest.editor = {};
+$MandelQuest.utils = {};
 
-let $MQ = $MandelQuest, $e = $MQ.editor; //shorten these inside file-wide scopes
+let $MQ = $MandelQuest, $e = $MQ.editor, $u = $MQ.utils; //shorten these inside file-wide scopes
 
 // Include local "dependecies", i.e. the other JS files in the project.
 for (let dep of [
@@ -22,7 +23,9 @@ for (let dep of [
     "editor/tree",
     "fractal",
     "palette",
-    "utils",
+    "utils/elem",
+    "utils/range",
+    "utils/tree",
 ]) {
     //https://www.geeksforgeeks.org/how-to-include-a-javascript-file-in-another-javascript-file/
     let scriptTag = document.createElement('script');

@@ -2,7 +2,7 @@
 
 {
 
-let $MQ = $MandelQuest, $e = $MQ.editor;
+let $MQ = $MandelQuest, $e = $MQ.editor, $u = $MQ.utils;
 
 $e.init = function () {
     $e.initTree();
@@ -14,11 +14,10 @@ $e.init = function () {
     $MQ.canvas.addEventListener('wheel', $e.handleWheel);
 };
 
-function initElems () {
-    let elem = $MQ.utils.elem;
-    let Range = $MQ.utils.Range;
+function initElems ()
+{
     function fractal () {return $MQ.scene.fractals[0];};
-    $e.n_iter = elem({
+    $e.n_iter = $u.elem({
         E: 'input',
         type: 'text',
         size: 3,
@@ -31,7 +30,7 @@ function initElems () {
             $MQ.drawScene();
         }
     });
-    $e.trans1 = elem({
+    $e.trans1 = $u.elem({
         E: 'input',
         type: 'text',
         size: 3,
@@ -44,7 +43,7 @@ function initElems () {
             $MQ.drawScene();
         },
     });
-    $e.trans2 = elem({
+    $e.trans2 = $u.elem({
         E: 'input',
         type: 'text',
         size: 3,
@@ -57,7 +56,7 @@ function initElems () {
             $MQ.drawScene();
         },
     });
-    $e.bg = elem({E: 'input', type: 'checkbox'});
+    $e.bg = $u.elem({E: 'input', type: 'checkbox'});
     $e.bgPhase = 0.0;
     setInterval(function () {
         if ($e.bg.checked) {
@@ -66,12 +65,12 @@ function initElems () {
             $MQ.drawScene();
         }
     }, 100);
-    $e.φ = new Range({min:-Math.PI, max:Math.PI, step:2*Math.PI/360, value:fractal().φ});
+    $e.φ = new $u.Range({min:-Math.PI, max:Math.PI, step:2*Math.PI/360, value:fractal().φ});
     $e.φ.listeners.push(value => {
         fractal().φ = value;
         $MQ.drawScene();
     })
-    $e.posRe = elem({
+    $e.posRe = $u.elem({
         E: 'input',
         type: 'text',
         size: 5,
@@ -83,7 +82,7 @@ function initElems () {
             $MQ.drawScene();
         },
     });
-    $e.posIm = elem({
+    $e.posIm = $u.elem({
         E: 'input',
         type: 'text',
         size: 5,
@@ -95,12 +94,12 @@ function initElems () {
             $MQ.drawScene();
         },
     });
-    $e.l = new Range({min:2**-20, max:2, step:1/256, value:fractal().l});
+    $e.l = new $u.Range({min:2**-20, max:2, step:1/256, value:fractal().l});
     $e.l.listeners.push(value => {
         fractal().l = value;
         $MQ.drawScene();
     });
-    $e.lp = new elem({
+    $e.lp = new $u.elem({
         E: 'input',
         type: 'button',
         value: '+',
@@ -109,7 +108,7 @@ function initElems () {
             $MQ.drawScene();
         }
     });
-    $e.lm = new elem({
+    $e.lm = new $u.elem({
         E: 'input',
         type: 'button',
         value: '-',
@@ -118,7 +117,7 @@ function initElems () {
             $MQ.drawScene();
         }
     });
-    $e.sizeWT = elem({
+    $e.sizeWT = $u.elem({
         E: 'input',
         type: 'text',
         value: $MQ.canvas.width,
@@ -131,7 +130,7 @@ function initElems () {
             fractal().width = value;
         },
     });
-    $e.sizeHT = elem({
+    $e.sizeHT = $u.elem({
         E: 'input',
         type: 'text',
         value: $MQ.canvas.height,
@@ -144,33 +143,33 @@ function initElems () {
             fractal().height = value;
         },
     });
-    $e.pertRe = new Range({min:-2, max:2, step:1/256});
+    $e.pertRe = new $u.Range({min:-2, max:2, step:1/256});
     $e.pertRe.listeners.push(value => {
         fractal().pert.re = value;
         $MQ.drawScene();
     });
-    $e.pertIm = new Range({min:-2, max:2, step:1/256});
+    $e.pertIm = new $u.Range({min:-2, max:2, step:1/256});
     $e.pertIm.listeners.push(value => {
         fractal().pert.im = value;
         $MQ.drawScene();
     });
-    $e.julia = new Range({min:0, max:1, step:1/256});
+    $e.julia = new $u.Range({min:0, max:1, step:1/256});
     $e.julia.listeners.push(value => {
         fractal().julia = value;
         $MQ.drawScene();
     });
-    $e.julia1 = elem({
+    $e.julia1 = $u.elem({
         E: 'input',
         type: 'button',
         value: '1',
         onclick: function () {$e.julia.change(1);},
     });
-    $e.cut = new Range({min:0, max:1, step:1/256});
+    $e.cut = new $u.Range({min:0, max:1, step:1/256});
     $e.cut.listeners.push(value => {
         fractal().cut = value;
         $MQ.drawScene();
     });
-    $e.panel = elem({
+    $e.panel = $u.elem({
         E: 'table',
         C: [
             {

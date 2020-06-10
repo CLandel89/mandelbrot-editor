@@ -2,13 +2,10 @@
 
 {
 
-let $MQ = $MandelQuest;
-let $e = $MQ.editor;
+let $MQ = $MandelQuest, $e = $MQ.editor, $u = $MQ.utils;
 
 $e.initTree = function ()
 {
-    let $u = $MQ.utils;
-
     function stylizeButton (button) {
         button.style.padding = '0px 4px';
         button.style.margin = '0px 2px';
