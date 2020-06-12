@@ -9,6 +9,8 @@
 if (window.$MandelQuest) throw new Error("window.$MandelQuest already set.");
 window.$MandelQuest = {};
 $MandelQuest.editor = {};
+$MandelQuest.editor.tree = {};
+$MandelQuest.editor.fractalPanel = {};
 $MandelQuest.utils = {};
 
 let $MQ = $MandelQuest, $e = $MQ.editor, $u = $MQ.utils; //shorten these inside file-wide scopes
@@ -20,6 +22,7 @@ for (let dep of [
     "complex",
     "editor/editor",
     "editor/mouse",
+    "editor/fractal-panel",
     "editor/tree",
     "fractal",
     "palette",

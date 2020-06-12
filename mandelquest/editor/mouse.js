@@ -9,7 +9,7 @@
 
 {
 
-let $MQ = $MandelQuest, $e = $MQ.editor;
+let $MQ = $MandelQuest, $e = $MQ.editor, $fp = $e.fractalPanel;
 
 let mouseDown=false, lastMouseX=null, lastMouseY=null;
 
@@ -46,7 +46,7 @@ function handleMouseDrag(ev) {
     fractal.pos = fractal.pos.sub(offsetR.smul(2*deltaX/canvas.width));
     fractal.pos = fractal.pos.add(offsetH.smul(2*deltaY/canvas.height));
     $MQ.drawScene();
-    $MQ.editor.update();
+    $fp.update();
 
     lastMouseX = newX;
     lastMouseY = newY;
@@ -73,7 +73,7 @@ $e.handleWheel = function (ev) {
     // posN = pos + (1-factor) * (mX*oR + mY*oH)
     $MQ.scene.fractals[0].pos = pos.add($MQ.add(oR.smul(mX), oH.smul(mY)).smul(1-factor));
     $MQ.drawScene();
-    $e.update();
+    $fp.update();
 
     return false;
 }

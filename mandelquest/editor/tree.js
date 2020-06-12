@@ -2,10 +2,10 @@
 
 {
 
-let $MQ = $MandelQuest, $e = $MQ.editor, $u = $MQ.utils;
+let $MQ = $MandelQuest, $e = $MQ.editor, $t = $e.tree, $fp = $e.fractalPanel, $u = $MQ.utils;
 
-$e.initTree = function ()
-{
+$t.init = function () {
+
     function stylizeButton (button) {
         button.style.padding = '0px 4px';
         button.style.margin = '0px 2px';
@@ -20,7 +20,7 @@ $e.initTree = function ()
         $MQ.scene.fractals[0] = fractal;
         fractal.tree.elemLabel.style.fontWeight = 900;
         $MQ.drawScene();
-        $e.update();
+        $fp.update();
     }
 
     function createFractalButton (parentTree) {
@@ -62,26 +62,26 @@ $e.initTree = function ()
         return result;
     }
 
-    $e.treeSettings = new $u.Tree({T: 'settings'});
-    $e.treeFractals = new $u.Tree({
+    $t.settings = new $u.Tree({T: 'settings'});
+    $t.fractals = new $u.Tree({
         T: 'fractals',
-        onclick: () => { selectFractal($e.treeFractals.obj); },
+        onclick: () => { selectFractal($t.fractals.obj); },
         obj: $MQ.scene.fractals[0],
     });
-    $e.treeFractals.widgets = [createFractalButton($e.treeFractals)];
-    $e.treeFractals.refresh();
-    $e.treeFractals.obj.tree = $e.treeFractals;
+    $t.fractals.widgets = [createFractalButton($t.fractals)];
+    $t.fractals.refresh();
+    $t.fractals.obj.tree = $t.fractals;
     selectFractal($MQ.scene.fractals[0]);
-    $e.treePalettes = new $u.Tree({T: 'palettes'});
-    $e.treeAnimations = new $u.Tree({T: 'animations'});
+    $t.palettes = new $u.Tree({T: 'palettes'});
+    $t.animations = new $u.Tree({T: 'animations'});
     let tree = document.getElementById($MQ.treeId);
-    tree.appendChild($e.treeSettings.elem);
+    tree.appendChild($t.settings.elem);
     tree.appendChild($u.elem({E: 'br'}));
-    tree.appendChild($e.treeFractals.elem);
+    tree.appendChild($t.fractals.elem);
     tree.appendChild($u.elem({E: 'br'}));
-    tree.appendChild($e.treePalettes.elem);
+    tree.appendChild($t.palettes.elem);
     tree.appendChild($u.elem({E: 'br'}));
-    tree.appendChild($e.treeAnimations.elem);
+    tree.appendChild($t.animations.elem);
 };
 
 }
