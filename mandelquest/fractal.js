@@ -6,6 +6,13 @@
 
 let $MQ = $MandelQuest;
 
+//helper function that prevents reference chaos
+function copyVal (val) {
+    if (val instanceof $MQ.Complex)
+        return new $MQ.Complex(val.re, val.im);
+    return val;
+}
+
 $MQ.Fractal = class
 {
     constructor (definition)
@@ -30,18 +37,18 @@ $MQ.Fractal = class
         if (definition === undefined) definition = {};
         if (definition instanceof $MQ.Fractal) definition = definition.definition();
         for (let [dkey, dvalue] of Object.entries($MQ.Fractal.DEFAULTS))
-            this[dkey] = dvalue;
+            this[dkey] = copyVal(dvalue);
         for (let [dkey, dvalue] of Object.entries(definition)) {
             if (! (dkey in $MQ.Fractal.DEFAULTS))
                 throw new Error(`Unknown Fractal parameter ${dkey}!`);
-            this[dkey] = dvalue;
+            this[dkey] = copyVal(dvalue);
         }
     }
 
     definition () {
         let result = {};
         for (let dkey in $MQ.Fractal.DEFAULTS)
-            result[dkey] = this[dkey];
+            result[dkey] = copyVal(this[dkey]);
         return result;
     }
 };
