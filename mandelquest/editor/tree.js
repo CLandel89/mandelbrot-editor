@@ -34,7 +34,7 @@ $t.init = function () {
                     T: 'new fractal',
                     onclick: () => { selectFractal(subTree.obj); },
                 });
-                subTree.tree = subTree.obj.tree = subTree;
+                subTree.obj.tree = subTree;
                 subTree.widgets = [
                     createFractalButton(subTree),
                     removeFractalButton(subTree),
