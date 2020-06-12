@@ -30,7 +30,7 @@ $MQ.Fractal = class
                 pert: new $MQ.Complex(0,0), // add perturbation
                 φ: 0.0, // turn the fractal a bit or around
                 l: 2.0, // the length (in the fractal pane) from pos to the nearest edge of the canvas
-                julia: 0.0, // you can transform the scene into a Julia set - partly or whole
+                julia: 0.0, // you can transform the fractal into a Julia set - partly or whole
                 cut: 0.0, // you can apply an effect that looks like a round cut
             };
         }
