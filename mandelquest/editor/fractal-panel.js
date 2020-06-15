@@ -182,150 +182,42 @@ $fp.init = function () {
     $fp.panel = $u.elem({
         E: 'table',
         C: [
-            {
-                E: 'tr',
-                C: [
-                    {E: 'td', T: 'name'},
-                    {E: 'td', C: [$fp.name]}
-                ]
-            },
-            {
-                E: 'tr',
-                C: [
-                    {E: 'td', T: 'N iter'},
-                    {E: 'td', C: [$fp.n_iter]}
-                ]
-            },
-            {
-                E: 'tr',
-                C: [
-                    {E: 'td', T: 'Transp'},
-                    {
-                        E: 'td',
-                        C: [$fp.trans1, $fp.trans2]
-                    }
-                ]
-            },
-            {
-                E: 'tr',
-                C: [
-                    {
-                        E: 'td',
-                        C: [
-                            {
-                                E: 'label',
-                                T: 'phase BG',
-                                'for': $fp.bg,
-                            },
-                        ]
-                    },
-                    {E: 'td', C: [$fp.bg]},
-                ]
-            },
-            {
-                E: 'tr',
-                C: [
-                    {E: 'td', T: 'φ'},
-                    {
-                        E: 'td',
-                        C: [
-                            $fp.φ.text, $fp.φ.reset,
-                            {E: 'br'},
-                            $fp.φ.range
-                        ]
-                    }
-                ]
-            },
-            {
-                E: 'tr',
-                C: [
-                    {E: 'td', T: 'L'},
-                    {
-                        E: 'td',
-                        C: [
-                            $fp.l.text, $fp.l.reset, $fp.lp, $fp.lm,
-                            {E: 'br'},
-                            $fp.l.range
-                        ]
-                    }
-                ]
-            },
-            {
-                E: 'tr',
-                C: [
-                    {E: 'td', T: 'Pos'},
-                    {
-                        E: 'td',
-                        C: [$fp.posRe, $fp.posIm]
-                    }
-                ]
-            },
-            {
-                E: 'tr',
-                C: [
-                    {E: 'td', T: 'Size'},
-                    {
-                        E: 'td',
-                        C: [$fp.sizeWT, $fp.sizeHT]
-                    },
-                ]
-            },
-            {
-                E: 'tr',
-                C: [
-                    {E: 'td', T: 'Pert Re'},
-                    {
-                        E: 'td',
-                        C: [
-                            $fp.pertRe.text, $fp.pertRe.reset,
-                            {E: 'br'},
-                            $fp.pertRe.range,
-                        ]
-                    },
-                ]
-            },
-            {
-                E: 'tr',
-                C: [
-                    {E: 'td', T: 'Pert Im'},
-                    {
-                        E: 'td',
-                        C: [
-                            $fp.pertIm.text, $fp.pertIm.reset,
-                            {E: 'br'},
-                            $fp.pertIm.range,
-                        ]
-                    }
-                ]
-            },
-            {
-                E: 'tr',
-                C: [
-                    {E: 'td', T: 'Julia'},
-                    {
-                        E: 'td',
-                        C: [
-                            $fp.julia.text, $fp.julia.reset, $fp.julia1,
-                            {E: 'br'},
-                            $fp.julia.range,
-                        ]
-                    }
-                ]
-            },
-            {
-                E: 'tr',
-                C: [
-                    {E: 'td', T: 'Cut'},
-                    {
-                        E: 'td',
-                        C: [
-                            $fp.cut.text, $fp.cut.reset,
-                            {E: 'br'},
-                            $fp.cut.range,
-                        ]
-                    }
-                ]
-            },
+            $u.labelledTR('name', [$fp.name]),
+            $u.labelledTR('N iter', [$fp.n_iter]),
+            $u.labelledTR('Transp', [$fp.trans1, $fp.trans2]),
+            $u.labelledTR('phase BG', [$fp.bg]),
+            $u.labelledTR('φ', [
+                $fp.φ.text, $fp.φ.reset,
+                {E: 'br'},
+                $fp.φ.range,
+            ]),
+            $u.labelledTR('L', [
+                $fp.l.text, $fp.l.reset, $fp.lp, $fp.lm,
+                {E: 'br'},
+                $fp.l.range,
+            ]),
+            $u.labelledTR('Pos', [$fp.posRe, $fp.posIm]),
+            $u.labelledTR('Size', [$fp.sizeWT, $fp.sizeHT]),
+            $u.labelledTR('Pert Re', [
+                $fp.pertRe.text, $fp.pertRe.reset,
+                {E: 'br'},
+                $fp.pertRe.range,
+            ]),
+            $u.labelledTR('Pert Im', [
+                $fp.pertIm.text, $fp.pertIm.reset,
+                {E: 'br'},
+                $fp.pertIm.range,
+            ]),
+            $u.labelledTR('Julia', [
+                $fp.julia.text, $fp.julia.reset, $fp.julia1,
+                {E: 'br'},
+                $fp.julia.range,
+            ]),
+            $u.labelledTR('Cut', [
+                $fp.cut.text, $fp.cut.reset,
+                {E: 'br'},
+                $fp.cut.range,
+            ]),
         ]
     });
     document.getElementById('mandelquest-panel').appendChild($fp.panel);

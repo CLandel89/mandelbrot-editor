@@ -32,4 +32,15 @@ $u.elem = function (definition) {
     return element;
 };
 
+$u.labelledTR = function (label, contents) {
+    if (contents === undefined) contents = [];
+    return $u.elem({
+        E: 'tr',
+        C: [
+            {E: 'td', T: label},
+            {E: 'td', C: contents}
+        ]
+    });
+};
+
 }
