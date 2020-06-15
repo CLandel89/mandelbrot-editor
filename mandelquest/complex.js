@@ -74,7 +74,7 @@ $MQ.Complex = class Complex
     }
 
     static prod () {
-        let result = Complex(1,0);
+        let result = new Complex(1,0);
         for (let x of arguments)
             result = result.mul(x);
         return result;
