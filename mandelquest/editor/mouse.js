@@ -55,14 +55,17 @@ function handleMouseDrag(ev) {
 $e.handleWheel = function (ev) {
     //https://stackoverflow.com/a/10313183
 
-    const factor = 1.25 ** ev.deltaY;
+    const factor = ev.deltaY>0 ? 1.5 : 1/1.5;
     $MQ.scene.fractals[0].l *= factor;
     const pos = $MQ.scene.fractals[0].pos;
     //calculate the position of the mouse cursor in the complex pane
+    //for the canvas coords, c.f. https://riptutorial.com/html5-canvas/example/19534/mouse-coordinates-after-resizing--or-scrolling-
     const oR = $MQ.uniformTypeVal['offsetR'][1];
     const oH = $MQ.uniformTypeVal['offsetH'][1];
-    let mX = (ev.clientX - $MQ.canvas.width/2) / ($MQ.canvas.width/2);
-    let mY = - (ev.clientY - $MQ.canvas.height/2) / ($MQ.canvas.height/2);
+    const canvasX = $MQ.canvas.getBoundingClientRect().left;
+    const canvasY = $MQ.canvas.getBoundingClientRect().top;
+    let mX = (ev.clientX - canvasX - $MQ.canvas.width/2) / ($MQ.canvas.width/2);
+    let mY = - (ev.clientY - canvasY - $MQ.canvas.height/2) / ($MQ.canvas.height/2);
     let posM = pos;
     posM = posM.add(oR.smul(mX));
     posM = posM.add(oH.smul(mY));
@@ -74,8 +77,6 @@ $e.handleWheel = function (ev) {
     $MQ.scene.fractals[0].pos = pos.add($MQ.add(oR.smul(mX), oH.smul(mY)).smul(1-factor));
     $MQ.drawScene();
     $fp.update();
-
-    return false;
-}
+};
 
 }
