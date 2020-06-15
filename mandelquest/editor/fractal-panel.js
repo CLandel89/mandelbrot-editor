@@ -13,10 +13,13 @@ $fp.init = function () {
         size: 8,
         value: fractal().name,
         onkeyup: function () {
+            if (this.value.replace(/\s/g, '') === '')
+                //disallow names like " " which can lock out the user from the root fractal
+                return;
+            fractal().name = this.value;
             if (fractal() === $t.fractals.obj)
-                this.value = 'fractals';
-            else if (this.value !== '') {
-                fractal().name = this.value;
+                $t.fractals.elemLabel.textContent = this.value;
+            else {
                 let parent = fractal().tree.parent;
                 parent.remove(fractal().tree);
                 fractal().tree.setLabel(this.value);
