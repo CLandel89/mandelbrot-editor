@@ -116,7 +116,8 @@ $fp.init = function ()
         onclick: function () {
             fractal().l /= 33/32;
             $MQ.drawScene();
-        }
+            $fp.update();
+        },
     });
     $fp.lm = new $u.elem({
         E: 'input',
@@ -125,7 +126,8 @@ $fp.init = function ()
         onclick: function () {
             fractal().l *= 33/32;
             $MQ.drawScene();
-        }
+            $fp.update();
+        },
     });
     $fp.sizeWT = $u.elem({
         E: 'input',
