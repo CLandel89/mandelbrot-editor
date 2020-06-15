@@ -17,18 +17,18 @@ $e.handleMouseDown = function (ev) {
     mouseDown = true;
     lastMouseX = ev.clientX;
     lastMouseY = ev.clientY;
-}
+};
 
 $e.handleMouseUp = function (ev) {
     mouseDown = false;
-}
+};
 
 $e.handleMouseMove = function (ev) {
     if (mouseDown) {
         handleMouseDrag(ev);
         return;
     }
-}
+};
 
 function handleMouseDrag(ev) {
     const newX = ev.clientX, newY = ev.clientY;
@@ -74,7 +74,13 @@ $e.handleWheel = function (ev) {
     //and at the same time  posM = posN + factor*(mX*oR + mY*oH)
     // pos + mX*oR + mY*oH = posN + factor*(mX*oR + mY*oH)
     // posN = pos + (1-factor) * (mX*oR + mY*oH)
-    $MQ.scene.fractals[0].pos = pos.add($MQ.add(oR.smul(mX), oH.smul(mY)).smul(1-factor));
+    $MQ.scene.fractals[0].pos = $MQ.Complex.sum(
+        pos,
+        $MQ.Complex.sum(
+            oR.smul(mX),
+            oH.smul(mY)
+        ).smul(1-factor)
+    );
     $MQ.drawScene();
     $fp.update();
 };

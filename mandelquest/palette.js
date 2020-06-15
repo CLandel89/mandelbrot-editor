@@ -25,15 +25,14 @@ $MQ.palette = function* (n_iter, colors) {
             color.push(ia*colors[ic][c] + ib*colors[ic+1][c]);
         yield color;
     }
-}
+};
 
 $MQ.paletteArr = function (n_iter, colors) {
-    let p = function* () {
+    return Float32Array.from(function* () {
         for (let color of $MQ.palette(n_iter, colors))
             for (let c of color)
                 yield c;
-    };
-    return Float32Array.from(p());
-}
+    }());
+};
 
 }

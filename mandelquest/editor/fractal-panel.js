@@ -4,8 +4,8 @@
 
 let $MQ = $MandelQuest, $e = $MQ.editor, $u = $MQ.utils, $fp = $e.fractalPanel, $t = $e.tree;
 
-$fp.init = function () {
-
+$fp.init = function ()
+{
     function fractal () {return $MQ.scene.fractals[0];};
     $fp.name = $u.elem({
         E: 'input',
@@ -79,7 +79,7 @@ $fp.init = function () {
     $fp.φ.listeners.push(value => {
         fractal().φ = value;
         $MQ.drawScene();
-    })
+    });
     $fp.posRe = $u.elem({
         E: 'input',
         type: 'text',

@@ -6,8 +6,8 @@
 
 let $MQ = $MandelQuest, $u = $MQ.utils;
 
-$u.Tree = class {
-
+$u.Tree = class
+{
     static INDENT_T = '⊢-';
     static INDENT_T_LAST = '⊢ ';
     static EXPAND_LABEL = '→ ';
@@ -79,7 +79,7 @@ $u.Tree = class {
         for (let attr in tree)
             this.elemLabel[attr] = tree[attr];
         this.refresh();
-    };
+    }
 
     setLabel(label) {
         this.T = this.elemLabel.textContent = label;
@@ -87,7 +87,7 @@ $u.Tree = class {
 
     append (tree) {
         return this.insert(this.children.length, tree);
-    };
+    }
 
     insert (index, tree) {
         let childrenA = this.children.slice(0, index);
@@ -98,22 +98,22 @@ $u.Tree = class {
             tree.depth = this.depth + 1;
             tree = new $u.Tree(tree);
             tree.parent = this;
-        };
+        }
         let oldlen = this.children.length;
         this.children = childrenA.concat([tree]).concat(childrenC);
         let newlen = this.children.length;
         if (newlen-1 !== oldlen) throw new Error('Assertion failed');
         this.refresh();
         return tree;
-    };
+    }
 
     insertSorted (tree) {
         for (let i=0; i<this.children.length; i++) {
             if (tree.T.toUpperCase() < this.children[i].elemLabel.textContent.toUpperCase())
                 return this.insert(i, tree);
-        };
+        }
         return this.append(tree);
-    };
+    }
 
     remove (tree) {
         let found = false, index;
@@ -121,8 +121,8 @@ $u.Tree = class {
             if (this.children[index] === tree) {
                 found = true;
                 break find_index;
-            };
-        };
+            }
+        }
         if (!found) throw new Error('The specified subtree does not directly belong to this tree.');
         let childrenA = this.children.slice(0, index);
         let childrenB = this.children.slice(index+1);
@@ -131,7 +131,7 @@ $u.Tree = class {
             this.elemExpand.textContent = $u.Tree.EXPANSION_DISABLED_LABEL;
         this.elem.removeChild(tree.elem);
         this.refresh();
-    };
+    }
 
     toggleExpanded () {
         this.isExpanded = !this.isExpanded;
@@ -152,24 +152,24 @@ $u.Tree = class {
                 }
                 catch (error) {
                     //no-op
-                };
-        };
-    };
+                }
+        }
+    }
 
     expand () {
         if (!this.isExpanded) this.toggleExpanded();
-    };
+    }
 
     unexpand () {
         if (this.isExpanded) this.toggleExpanded();
-    };
+    }
 
     refresh () {
         this.toggleExpanded(); //toggle
         this.toggleExpanded(); //reset to previous state
         this.elemWidgets.textContent = '';
         for (let widget of this.widgets) this.elemWidgets.appendChild(widget);
-    };
+    }
 };
 
 }

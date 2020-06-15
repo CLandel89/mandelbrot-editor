@@ -7,10 +7,10 @@
 
 let $MQ = $MandelQuest, $u = $MQ.utils;
 
-$u.Range = class {
-
-    constructor (args) {
-
+$u.Range = class
+{
+    constructor (args)
+    {
         this.listeners = [];
 
         args = {...args}; //so "delete" in the next steps cannot interfere with the caller

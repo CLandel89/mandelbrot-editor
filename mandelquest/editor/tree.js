@@ -4,8 +4,8 @@
 
 let $MQ = $MandelQuest, $e = $MQ.editor, $t = $e.tree, $fp = $e.fractalPanel, $u = $MQ.utils;
 
-$t.init = function () {
-
+$t.init = function ()
+{
     function stylizeButton (button) {
         button.style.padding = '0px 4px';
         button.style.margin = '0px 2px';

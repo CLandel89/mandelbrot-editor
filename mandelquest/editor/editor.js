@@ -8,9 +8,9 @@ $e.init = function () {
     $t.init();
     $fp.init();
     //⇒editor/mouse.js
-    $MQ.canvas.onmousedown = $e.handleMouseDown;
-    document.onmouseup = $e.handleMouseUp;
-    document.onmousemove = $e.handleMouseMove;
+    $MQ.canvas.addEventListener('mousedown', $e.handleMouseDown);
+    document.addEventListener('mouseup', $e.handleMouseUp);
+    document.addEventListener('mousemove', $e.handleMouseMove);
     $MQ.canvas.addEventListener('wheel', $e.handleWheel);
 };
 

@@ -53,8 +53,8 @@ function updateUniforms(fractal) {
         lenW = ($MQ.canvas.width/$MQ.canvas.height) * fractal.l;
         lenH = fractal.l;
     }
-    let offsetR = $MQ.fromPolar(lenW, fractal.φ);
-    let offsetH = $MQ.fromPolar(lenH, fractal.φ+Math.PI/2);
+    let offsetR = $MQ.Complex.fromPolar(lenW, fractal.φ);
+    let offsetH = $MQ.Complex.fromPolar(lenH, fractal.φ+Math.PI/2);
     $MQ.uniformTypeVal = {
         'bgPhase': ['1f', [$MQ.scene.bgPhase]],
         'colors': ['1i', [0]], //TEXTURE0
@@ -90,7 +90,7 @@ $MQ.drawScene = function () {
         0,
         $MQ.cornerVertices.length/2,
     );
-}
+};
 
 $MQ.init = function ()
 {
@@ -213,11 +213,8 @@ $MQ.init = function ()
     // (just returning from the function in this case)
     $MQ.drawScene();
     // Are the panel and tree also desired or just the canvas?
-    $e.enabled = $MQ.panelId && $MQ.treeId;
-    if ($e.enabled) {
-        //
-        $e.init();
-    }
-}
+    $e.enabled = !! ($MQ.panelId && $MQ.treeId);
+    if ($e.enabled) $e.init();
+};
 
 }
