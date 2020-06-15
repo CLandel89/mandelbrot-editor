@@ -25,6 +25,7 @@ $u.Tree = class {
         delete tree.depth;
         this.children = [];
         if (!tree.T) tree.T = '';
+        this.T = tree.T;
         let indentT = '';
         for (let d=0; d<this.depth; d++) {
             if (d === this.depth-1)
@@ -79,6 +80,10 @@ $u.Tree = class {
             this.elemLabel[attr] = tree[attr];
         this.refresh();
     };
+
+    setLabel(label) {
+        this.T = this.elemLabel.textContent = label;
+    }
 
     append (tree) {
         return this.insert(this.children.length, tree);

@@ -35,6 +35,7 @@ $t.init = function () {
                     onclick: () => { selectFractal(subTree.obj); },
                 });
                 subTree.obj.tree = subTree;
+                subTree.obj.name = 'new fractal';
                 subTree.widgets = [
                     createFractalButton(subTree),
                     removeFractalButton(subTree),
@@ -71,6 +72,7 @@ $t.init = function () {
     $t.fractals.widgets = [createFractalButton($t.fractals)];
     $t.fractals.refresh();
     $t.fractals.obj.tree = $t.fractals;
+    $t.fractals.obj.name = 'fractals';
     selectFractal($MQ.scene.fractals[0]);
     $t.palettes = new $u.Tree({T: 'palettes'});
     $t.animations = new $u.Tree({T: 'animations'});

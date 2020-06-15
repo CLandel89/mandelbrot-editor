@@ -2,11 +2,28 @@
 
 {
 
-let $MQ = $MandelQuest, $e = $MQ.editor, $u = $MQ.utils, $fp = $e.fractalPanel;
+let $MQ = $MandelQuest, $e = $MQ.editor, $u = $MQ.utils, $fp = $e.fractalPanel, $t = $e.tree;
 
 $fp.init = function () {
 
     function fractal () {return $MQ.scene.fractals[0];};
+    $fp.name = $u.elem({
+        E: 'input',
+        type: 'text',
+        size: 8,
+        value: fractal().name,
+        onkeyup: function () {
+            if (fractal() === $t.fractals.obj)
+                this.value = 'fractals';
+            else if (this.value !== '') {
+                fractal().name = this.value;
+                let parent = fractal().tree.parent;
+                parent.remove(fractal().tree);
+                fractal().tree.setLabel(this.value);
+                parent.insertSorted(fractal().tree);
+            }
+        },
+    });
     $fp.n_iter = $u.elem({
         E: 'input',
         type: 'text',
@@ -165,6 +182,13 @@ $fp.init = function () {
             {
                 E: 'tr',
                 C: [
+                    {E: 'td', T: 'name'},
+                    {E: 'td', C: [$fp.name]}
+                ]
+            },
+            {
+                E: 'tr',
+                C: [
                     {E: 'td', T: 'N iter'},
                     {E: 'td', C: [$fp.n_iter]}
                 ]
@@ -308,6 +332,7 @@ $fp.init = function () {
 $fp.update = function () {
     if (!$fp.initted) return;
     let fractal = $MQ.scene.fractals[0];
+    $fp.name.value = fractal.name;
     $fp.n_iter.value = fractal.n_iter;
     $fp.trans1.value = fractal.trans1;
     $fp.trans2.value = fractal.trans2;
