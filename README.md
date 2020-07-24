@@ -9,3 +9,5 @@ Planned features:
 
 Open the project on GitHub Pages to see what has been implemented so far:
 [https://clandel89.github.io/mandelbrot-editor/](https://clandel89.github.io/mandelbrot-editor/)
+
+Tested in newer versions of Firefox, Chrome and Chrome-based Edge.
