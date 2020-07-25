@@ -35,7 +35,7 @@ for (let dep of [
 ]) {
     //https://www.geeksforgeeks.org/how-to-include-a-javascript-file-in-another-javascript-file/
     let scriptTag = document.createElement('script');
-    scriptTag.src = `mandelquest/${dep}.js`;
+    scriptTag.src = `clandel89-mandelbrot/${dep}.js`;
     document.getElementsByTagName('head').item(0).appendChild(scriptTag);
 }
 
