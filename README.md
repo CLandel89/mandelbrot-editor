@@ -9,5 +9,6 @@ Planned features:
 
 Open the editor on GitHub Pages to see what has been implemented so far:
 [https://clandel89.github.io/mandelbrot-editor/](https://clandel89.github.io/mandelbrot-editor/)
+Use the scroll wheel to zoom in and out of the fractal. Drag the position around, holding down the left mouse button.
 
-Tested in newer versions of Firefox, Chrome and Chrome-based Edge.
+Tested in newer versions of Firefox, Chrome and Chrome-based Edge; (Linux and Windows).
