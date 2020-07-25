@@ -9,7 +9,7 @@
 
 {
 
-let $MQ = $MandelQuest, $e = $MQ.editor, $fp = $e.fractalPanel;
+let $MB = $CLandel89.Mandelbrot, $e = $MB.editor, $fp = $e.fractalPanel;
 
 let mouseDown=false, lastMouseX=null, lastMouseY=null;
 
@@ -35,17 +35,17 @@ function handleMouseDrag(ev) {
     const deltaX = newX-lastMouseX, deltaY = newY-lastMouseY;
 
     //Recycle some values calculated for the shaders.
-    let uniformTypeVal = $MQ.uniformTypeVal;
+    let uniformTypeVal = $MB.uniformTypeVal;
     const offsetR = uniformTypeVal['screenW'][1];
     const offsetH = uniformTypeVal['screenH'][1];
     //Put it together such that you can drag around the fractals.
     //Note the differences between canvas and OpenGL:
     //(0,0): upper left corner vs. middle
     //Y axis: points downwards vs. upwards
-    let fractal = $MQ.scene.fractals[0], canvas = $MQ.canvas;
+    let fractal = $MB.scene.fractals[0], canvas = $MB.canvas;
     fractal.pos = fractal.pos.sub(offsetR.smul(2*deltaX/canvas.width));
     fractal.pos = fractal.pos.add(offsetH.smul(2*deltaY/canvas.height));
-    $MQ.drawScene();
+    $MB.drawScene();
     $fp.update();
 
     lastMouseX = newX;
@@ -56,16 +56,16 @@ $e.handleWheel = function (ev) {
     //https://stackoverflow.com/a/10313183
 
     const factor = ev.deltaY>0 ? 1.5 : 1/1.5;
-    $MQ.scene.fractals[0].l *= factor;
-    const pos = $MQ.scene.fractals[0].pos;
+    $MB.scene.fractals[0].l *= factor;
+    const pos = $MB.scene.fractals[0].pos;
     //calculate the position of the mouse cursor in the complex pane
     //for the canvas coords, c.f. https://riptutorial.com/html5-canvas/example/19534/mouse-coordinates-after-resizing--or-scrolling-
-    const oR = $MQ.uniformTypeVal['screenW'][1];
-    const oH = $MQ.uniformTypeVal['screenH'][1];
-    const canvasX = $MQ.canvas.getBoundingClientRect().left;
-    const canvasY = $MQ.canvas.getBoundingClientRect().top;
-    let mX = (ev.clientX - canvasX - $MQ.canvas.width/2) / ($MQ.canvas.width/2);
-    let mY = - (ev.clientY - canvasY - $MQ.canvas.height/2) / ($MQ.canvas.height/2);
+    const oR = $MB.uniformTypeVal['screenW'][1];
+    const oH = $MB.uniformTypeVal['screenH'][1];
+    const canvasX = $MB.canvas.getBoundingClientRect().left;
+    const canvasY = $MB.canvas.getBoundingClientRect().top;
+    let mX = (ev.clientX - canvasX - $MB.canvas.width/2) / ($MB.canvas.width/2);
+    let mY = - (ev.clientY - canvasY - $MB.canvas.height/2) / ($MB.canvas.height/2);
     let posM = pos;
     posM = posM.add(oR.smul(mX));
     posM = posM.add(oH.smul(mY));
@@ -74,14 +74,14 @@ $e.handleWheel = function (ev) {
     //and at the same time  posM = posN + factor*(mX*oR + mY*oH)
     // pos + mX*oR + mY*oH = posN + factor*(mX*oR + mY*oH)
     // posN = pos + (1-factor) * (mX*oR + mY*oH)
-    $MQ.scene.fractals[0].pos = $MQ.Complex.sum(
+    $MB.scene.fractals[0].pos = $MB.Complex.sum(
         pos,
-        $MQ.Complex.sum(
+        $MB.Complex.sum(
             oR.smul(mX),
             oH.smul(mY)
         ).smul(1-factor)
     );
-    $MQ.drawScene();
+    $MB.drawScene();
     $fp.update();
 };
 

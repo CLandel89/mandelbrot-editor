@@ -2,9 +2,9 @@
 
 {
 
-let $MQ = $MandelQuest;
+let $MB = $CLandel89.Mandelbrot;
 
-$MQ.palette = function* (n_iter, colors) {
+$MB.palette = function* (n_iter, colors) {
     if (!colors)
         colors = [
             [1,1,1],
@@ -27,9 +27,9 @@ $MQ.palette = function* (n_iter, colors) {
     }
 };
 
-$MQ.paletteArr = function (n_iter, colors) {
+$MB.paletteArr = function (n_iter, colors) {
     return Float32Array.from(function* () {
-        for (let color of $MQ.palette(n_iter, colors))
+        for (let color of $MB.palette(n_iter, colors))
             for (let c of color)
                 yield c;
     }());

@@ -4,7 +4,7 @@
 
 {
 
-let $MQ = $MandelQuest, $u = $MQ.utils;
+let $MB = $CLandel89.Mandelbrot, $u = $MB.utils;
 
 $u.Tree = class
 {

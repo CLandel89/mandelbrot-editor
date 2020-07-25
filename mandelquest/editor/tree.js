@@ -2,7 +2,7 @@
 
 {
 
-let $MQ = $MandelQuest, $e = $MQ.editor, $t = $e.tree, $fp = $e.fractalPanel, $u = $MQ.utils;
+let $MB = $CLandel89.Mandelbrot, $e = $MB.editor, $t = $e.tree, $fp = $e.fractalPanel, $u = $MB.utils;
 
 $t.init = function ()
 {
@@ -15,11 +15,11 @@ $t.init = function ()
     }
 
     function selectFractal (fractal) {
-        let prevFractal = $MQ.scene.fractals[0];
+        let prevFractal = $MB.scene.fractals[0];
         prevFractal.tree.elemLabel.style.fontWeight = 'normal';
-        $MQ.scene.fractals[0] = fractal;
+        $MB.scene.fractals[0] = fractal;
         fractal.tree.elemLabel.style.fontWeight = 900;
-        $MQ.drawScene();
+        $MB.drawScene();
         $fp.update();
     }
 
@@ -30,7 +30,7 @@ $t.init = function ()
             value: String.fromCodePoint(0xFF0B), //fat plus
             onclick: function () {
                 let subTree = parentTree.insertSorted({
-                    obj: new $MQ.Fractal(parentTree.obj),
+                    obj: new $MB.Fractal(parentTree.obj),
                     T: 'new fractal',
                     onclick: () => { selectFractal(subTree.obj); },
                 });
@@ -67,16 +67,16 @@ $t.init = function ()
     $t.fractals = new $u.Tree({
         T: 'fractals',
         onclick: () => { selectFractal($t.fractals.obj); },
-        obj: $MQ.scene.fractals[0],
+        obj: $MB.scene.fractals[0],
     });
     $t.fractals.widgets = [createFractalButton($t.fractals)];
     $t.fractals.refresh();
     $t.fractals.obj.tree = $t.fractals;
     $t.fractals.obj.name = 'fractals';
-    selectFractal($MQ.scene.fractals[0]);
+    selectFractal($MB.scene.fractals[0]);
     $t.palettes = new $u.Tree({T: 'palettes'});
     $t.animations = new $u.Tree({T: 'animations'});
-    let tree = document.getElementById($MQ.treeId);
+    let tree = document.getElementById($MB.treeId);
     tree.appendChild($t.settings.elem);
     tree.appendChild($u.elem({E: 'br'}));
     tree.appendChild($t.fractals.elem);

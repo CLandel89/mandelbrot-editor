@@ -2,11 +2,11 @@
 
 {
 
-let $MQ = $MandelQuest, $e = $MQ.editor, $u = $MQ.utils, $fp = $e.fractalPanel, $t = $e.tree;
+let $MB = $CLandel89.Mandelbrot, $e = $MB.editor, $u = $MB.utils, $fp = $e.fractalPanel, $t = $e.tree;
 
 $fp.init = function ()
 {
-    function fractal () {return $MQ.scene.fractals[0];};
+    function fractal () { return $MB.scene.fractals[0]; }
     $fp.name = $u.elem({
         E: 'input',
         type: 'text',
@@ -37,7 +37,7 @@ $fp.init = function ()
             if (! (value <= 10000 && value >= 0))
                 return;
             fractal().n_iter = value;
-            $MQ.drawScene();
+            $MB.drawScene();
         }
     });
     $fp.trans1 = $u.elem({
@@ -50,7 +50,7 @@ $fp.init = function ()
             if (! (value <= fractal().n_iter && value >= 0))
                 return;
             fractal().trans1 = value;
-            $MQ.drawScene();
+            $MB.drawScene();
         },
     });
     $fp.trans2 = $u.elem({
@@ -63,7 +63,7 @@ $fp.init = function ()
             if (! (value <= fractal().n_iter && value >= fractal().trans1))
                 return;
             fractal().trans2 = value;
-            $MQ.drawScene();
+            $MB.drawScene();
         },
     });
     $fp.bg = $u.elem({E: 'input', type: 'checkbox'});
@@ -71,14 +71,14 @@ $fp.init = function ()
     setInterval(function () {
         if ($fp.bg.checked) {
             $fp.bgPhase = ($fp.bgPhase + 100/4000*2*Math.PI) % (2*Math.PI);
-            $MQ.scene.bgPhase = (Math.cos($fp.bgPhase)+1) / 2;
-            $MQ.drawScene();
+            $MB.scene.bgPhase = (Math.cos($fp.bgPhase)+1) / 2;
+            $MB.drawScene();
         }
     }, 100);
     $fp.φ = new $u.Range({min:-Math.PI, max:Math.PI, step:2*Math.PI/360, value:fractal().φ});
     $fp.φ.listeners.push(value => {
         fractal().φ = value;
-        $MQ.drawScene();
+        $MB.drawScene();
     });
     $fp.posRe = $u.elem({
         E: 'input',
@@ -89,7 +89,7 @@ $fp.init = function ()
             if (! (value <= 2 && value >= -2))
                 return;
             fractal().pos.re = value;
-            $MQ.drawScene();
+            $MB.drawScene();
         },
     });
     $fp.posIm = $u.elem({
@@ -101,13 +101,13 @@ $fp.init = function ()
             if (! (value <= 2 && value >= -2))
                 return;
             fractal().pos.im = value;
-            $MQ.drawScene();
+            $MB.drawScene();
         },
     });
     $fp.l = new $u.Range({min:2**-20, max:2, step:1/256, value:fractal().l});
     $fp.l.listeners.push(value => {
         fractal().l = value;
-        $MQ.drawScene();
+        $MB.drawScene();
     });
     $fp.lp = new $u.elem({
         E: 'input',
@@ -115,7 +115,7 @@ $fp.init = function ()
         value: '+',
         onclick: function () {
             fractal().l /= 33/32;
-            $MQ.drawScene();
+            $MB.drawScene();
             $fp.update();
         },
     });
@@ -125,50 +125,50 @@ $fp.init = function ()
         value: '-',
         onclick: function () {
             fractal().l *= 33/32;
-            $MQ.drawScene();
+            $MB.drawScene();
             $fp.update();
         },
     });
     $fp.sizeWT = $u.elem({
         E: 'input',
         type: 'text',
-        value: $MQ.canvas.width,
+        value: $MB.canvas.width,
         size: 3,
         onkeyup: function () {
             let value = Math.floor(Number(this.value));
             if (! (value <= 1024 && value >= 64))
                 return;
-            $MQ.canvas.width = value;
+            $MB.canvas.width = value;
             fractal().width = value;
         },
     });
     $fp.sizeHT = $u.elem({
         E: 'input',
         type: 'text',
-        value: $MQ.canvas.height,
+        value: $MB.canvas.height,
         size: 3,
         onkeyup: function () {
             let value = Math.floor(Number(this.value));
             if (! (value <= 1024 && value >= 64))
                 return;
-            $MQ.canvas.height = value;
+            $MB.canvas.height = value;
             fractal().height = value;
         },
     });
     $fp.pertRe = new $u.Range({min:-2, max:2, step:1/256});
     $fp.pertRe.listeners.push(value => {
         fractal().pert.re = value;
-        $MQ.drawScene();
+        $MB.drawScene();
     });
     $fp.pertIm = new $u.Range({min:-2, max:2, step:1/256});
     $fp.pertIm.listeners.push(value => {
         fractal().pert.im = value;
-        $MQ.drawScene();
+        $MB.drawScene();
     });
     $fp.julia = new $u.Range({min:0, max:1, step:1/256});
     $fp.julia.listeners.push(value => {
         fractal().julia = value;
-        $MQ.drawScene();
+        $MB.drawScene();
     });
     $fp.julia1 = $u.elem({
         E: 'input',
@@ -179,7 +179,7 @@ $fp.init = function ()
     $fp.cut = new $u.Range({min:0, max:1, step:1/256});
     $fp.cut.listeners.push(value => {
         fractal().cut = value;
-        $MQ.drawScene();
+        $MB.drawScene();
     });
     $fp.panel = $u.elem({
         E: 'table',
@@ -222,13 +222,13 @@ $fp.init = function ()
             ]),
         ]
     });
-    document.getElementById('mandelquest-panel').appendChild($fp.panel);
+    document.getElementById('clandel89-mandelbrot-panel').appendChild($fp.panel);
     $fp.initted = true;
 };
 
 $fp.update = function () {
     if (!$fp.initted) return;
-    let fractal = $MQ.scene.fractals[0];
+    let fractal = $MB.scene.fractals[0];
     $fp.name.value = fractal.name;
     $fp.n_iter.value = fractal.n_iter;
     $fp.trans1.value = fractal.trans1;
@@ -239,9 +239,9 @@ $fp.update = function () {
     $fp.posRe.value = fractal.pos.re;
     $fp.posIm.value = fractal.pos.im;
     $fp.sizeWT.value = fractal.width;
-    $MQ.canvas.width = fractal.width;
+    $MB.canvas.width = fractal.width;
     $fp.sizeHT.value = fractal.height;
-    $MQ.canvas.height = fractal.height;
+    $MB.canvas.height = fractal.height;
     $fp.pertRe.text.value = fractal.pert.re;
     $fp.pertRe.range.value = fractal.pert.re;
     $fp.pertIm.text.value = fractal.pert.im;

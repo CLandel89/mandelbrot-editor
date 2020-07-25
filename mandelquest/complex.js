@@ -2,9 +2,9 @@
 
 {
 
-let $MQ = $MandelQuest;
+let $MB = $CLandel89.Mandelbrot;
 
-$MQ.Complex = class Complex
+$MB.Complex = class Complex
 {
     constructor (re, im) {
         if (re === undefined) re = 0;

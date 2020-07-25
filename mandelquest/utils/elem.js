@@ -5,7 +5,7 @@
 
 {
 
-let $MQ = $MandelQuest, $u = $MQ.utils;
+let $MB = $CLandel89.Mandelbrot, $u = $MB.utils;
 
 $u.elem = function (definition) {
     // Creates a DOM.

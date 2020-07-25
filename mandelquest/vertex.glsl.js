@@ -1,4 +1,4 @@
-$MandelQuest.shaderV = `#version 300 es
+$CLandel89.Mandelbrot.shaderV = `#version 300 es
 precision mediump float;
 
 in vec2 corner; //[-1,-1],[1,-1],[-1,1] or [1,1]
