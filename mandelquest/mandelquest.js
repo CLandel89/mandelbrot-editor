@@ -43,7 +43,7 @@ window.addEventListener(
     () => { $MQ.init(); },
 );
 
-function updateUniforms(fractal) {
+function updateUniforms (fractal) {
     let lenW, lenH; //length inside the complex pane of the fractal
     if ($MQ.canvas.height > $MQ.canvas.width) {
         lenW = fractal.l;
@@ -53,8 +53,8 @@ function updateUniforms(fractal) {
         lenW = ($MQ.canvas.width/$MQ.canvas.height) * fractal.l;
         lenH = fractal.l;
     }
-    let offsetR = $MQ.Complex.fromPolar(lenW, fractal.φ);
-    let offsetH = $MQ.Complex.fromPolar(lenH, fractal.φ+Math.PI/2);
+    let screenW = $MQ.Complex.fromPolar(lenW, fractal.φ);
+    let screenH = $MQ.Complex.fromPolar(lenH, fractal.φ+Math.PI/2);
     $MQ.uniformTypeVal = {
         'bgPhase': ['1f', [$MQ.scene.bgPhase]],
         'colors': ['1i', [0]], //TEXTURE0
@@ -62,14 +62,14 @@ function updateUniforms(fractal) {
         'julia': ['1f', [fractal.julia]],
         'n_iter': ['1i', [fractal.n_iter]],
         'pert': ['2f', fractal.pert],
-        'pos': ['2f', fractal.pos.sub(fractal.pert)],
-        'offsetR': ['2f', offsetR],
-        'offsetH': ['2f', offsetH],
+        'pos': ['2f', fractal.pos],
+        'screenW': ['2f', screenW],
+        'screenH': ['2f', screenH],
         'trans1': ['1i', [fractal.trans1]],
         'trans2': ['1i', [fractal.trans2]],
     };
     $MQ.uniformTypeVal = $MQ.uniformTypeVal;
-}
+};
 
 $MQ.drawScene = function () {
     updateUniforms($MQ.scene.fractals[0]);
@@ -82,7 +82,7 @@ $MQ.drawScene = function () {
         if (val instanceof $MQ.Complex)
             val = [val.re, val.im];
         let loc = $MQ.uniformLoc[uniform];
-        //the following turns out e.g. like this: gl.uniform2f(loc, 0.0, 0.0);
+        //the following turns out e.g. like this: $MQ.gl.uniform2f(loc, 0.0, 0.0);
         $MQ.gl ['uniform'+type] . apply ($MQ.gl, [loc].concat(val));
     }
     $MQ.gl.drawArrays(

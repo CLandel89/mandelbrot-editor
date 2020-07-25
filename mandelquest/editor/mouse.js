@@ -36,8 +36,8 @@ function handleMouseDrag(ev) {
 
     //Recycle some values calculated for the shaders.
     let uniformTypeVal = $MQ.uniformTypeVal;
-    const offsetR = uniformTypeVal['offsetR'][1];
-    const offsetH = uniformTypeVal['offsetH'][1];
+    const offsetR = uniformTypeVal['screenW'][1];
+    const offsetH = uniformTypeVal['screenH'][1];
     //Put it together such that you can drag around the fractals.
     //Note the differences between canvas and OpenGL:
     //(0,0): upper left corner vs. middle
@@ -60,8 +60,8 @@ $e.handleWheel = function (ev) {
     const pos = $MQ.scene.fractals[0].pos;
     //calculate the position of the mouse cursor in the complex pane
     //for the canvas coords, c.f. https://riptutorial.com/html5-canvas/example/19534/mouse-coordinates-after-resizing--or-scrolling-
-    const oR = $MQ.uniformTypeVal['offsetR'][1];
-    const oH = $MQ.uniformTypeVal['offsetH'][1];
+    const oR = $MQ.uniformTypeVal['screenW'][1];
+    const oH = $MQ.uniformTypeVal['screenH'][1];
     const canvasX = $MQ.canvas.getBoundingClientRect().left;
     const canvasY = $MQ.canvas.getBoundingClientRect().top;
     let mX = (ev.clientX - canvasX - $MQ.canvas.width/2) / ($MQ.canvas.width/2);
