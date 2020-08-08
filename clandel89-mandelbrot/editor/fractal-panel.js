@@ -80,6 +80,36 @@ $fp.init = function ()
         fractal().φ = value;
         $MB.drawScene();
     });
+    $fp.φmπ = $u.elem({
+        E: 'input',
+        type: 'button',
+        onclick: () => { $fp.φ.change(-Math.PI); },
+        value: '-π',
+    });
+    $fp.φmπ2 = $u.elem({
+        E: 'input',
+        type: 'button',
+        onclick: () => { $fp.φ.change(-Math.PI/2); },
+        value: '-π/2',
+    });
+    $fp.φπ2 = $u.elem({
+        E: 'input',
+        type: 'button',
+        onclick: () => { $fp.φ.change(Math.PI/2); },
+        value: 'π/2',
+    });
+    $fp.φm = $u.elem({
+        E: 'input',
+        type: 'button',
+        onclick: () => { $fp.φ.change($fp.φ.value - Math.PI*2/360); },
+        value: '-',
+    });
+    $fp.φp = $u.elem({
+        E: 'input',
+        type: 'button',
+        onclick: () => { $fp.φ.change($fp.φ.value + Math.PI*2/360); },
+        value: '+',
+    });
     $fp.posRe = $u.elem({
         E: 'input',
         type: 'text',
@@ -165,6 +195,11 @@ $fp.init = function ()
         fractal().pert.im = value;
         $MB.drawScene();
     });
+    setInterval(() => {
+        let disabled = (fractal().l < 0.25);
+        $fp.pertRe.range.disabled = disabled;
+        $fp.pertIm.range.disabled = disabled;
+    }, 300);
     $fp.julia = new $u.Range({min:0, max:1, step:1/256});
     $fp.julia.listeners.push(value => {
         fractal().julia = value;
@@ -182,44 +217,80 @@ $fp.init = function ()
         $MB.drawScene();
     });
     $fp.panel = $u.elem({
-        E: 'table',
+        E: 'a',
         C: [
-            $u.labelledTR('name', [$fp.name]),
-            $u.labelledTR('N iter', [$fp.n_iter]),
-            $u.labelledTR('Transp', [$fp.trans1, $fp.trans2]),
-            $u.labelledTR('phase BG', [$fp.bg]),
-            $u.labelledTR('φ', [
-                $fp.φ.text, $fp.φ.reset,
-                {E: 'br'},
-                $fp.φ.range,
-            ]),
-            $u.labelledTR('L', [
-                $fp.l.text, $fp.l.reset, $fp.lp, $fp.lm,
-                {E: 'br'},
-                $fp.l.range,
-            ]),
-            $u.labelledTR('Pos', [$fp.posRe, $fp.posIm]),
-            $u.labelledTR('Size', [$fp.sizeWT, $fp.sizeHT]),
-            $u.labelledTR('Pert Re', [
-                $fp.pertRe.text, $fp.pertRe.reset,
-                {E: 'br'},
-                $fp.pertRe.range,
-            ]),
-            $u.labelledTR('Pert Im', [
-                $fp.pertIm.text, $fp.pertIm.reset,
-                {E: 'br'},
-                $fp.pertIm.range,
-            ]),
-            $u.labelledTR('Julia', [
-                $fp.julia.text, $fp.julia.reset, $fp.julia1,
-                {E: 'br'},
-                $fp.julia.range,
-            ]),
-            $u.labelledTR('Cut', [
-                $fp.cut.text, $fp.cut.reset,
-                {E: 'br'},
-                $fp.cut.range,
-            ]),
+            {
+                E: 'table',
+                C: [
+                    $u.labelledTR('name', [$fp.name]),
+                    $u.labelledTR('N iter', [$fp.n_iter]),
+                    $u.labelledTR('Size', [$fp.sizeWT, $fp.sizeHT]),
+                    $u.labelledTR('Transp', [$fp.trans1, $fp.trans2]),
+                    $u.labelledTR('phase BG', [$fp.bg]),
+                ]
+            },
+            {
+                E: 'details',
+                C: [
+                    { E: 'summary', T: 'orientation' },
+                    {
+                        E: 'table',
+                        C: [
+                            $u.labelledTR('φ', [
+                                $fp.φ.text, $fp.φmπ, $fp.φmπ2, $fp.φ.reset, $fp.φπ2,
+                                {E: 'br'},
+                                $fp.φ.range, $fp.φp, $fp.φm,
+                            ]),
+                            $u.labelledTR('L', [
+                                $fp.l.text, $fp.l.reset, $fp.lp, $fp.lm,
+                            ]),
+                            $u.labelledTR('Pos', [$fp.posRe, $fp.posIm]),
+                        ]
+                    }
+                ]
+            },
+            {
+                E: 'details',
+                C: [
+                    { E: 'summary', T: 'static effects' },
+                    {
+                        E: 'table',
+                        C: [
+                            $u.labelledTR('Pert Re', [
+                                $fp.pertRe.text, $fp.pertRe.reset,
+                                {E: 'br'},
+                                $fp.pertRe.range,
+                            ]),
+                            $u.labelledTR('Pert Im', [
+                                $fp.pertIm.text, $fp.pertIm.reset,
+                                {E: 'br'},
+                                $fp.pertIm.range,
+                            ]),
+                        ]
+                    }
+                ]
+            },
+            {
+                E: 'details',
+                C: [
+                    { E: 'summary', T: 'other effects' },
+                    {
+                        E: 'table',
+                        C: [
+                            $u.labelledTR('Julia', [
+                                $fp.julia.text, $fp.julia.reset, $fp.julia1,
+                                {E: 'br'},
+                                $fp.julia.range,
+                            ]),
+                            $u.labelledTR('Cut', [
+                                $fp.cut.text, $fp.cut.reset,
+                                {E: 'br'},
+                                $fp.cut.range,
+                            ]),
+                        ]
+                    }
+                ]
+            },
         ]
     });
     document.getElementById('clandel89-mandelbrot-panel').appendChild($fp.panel);
