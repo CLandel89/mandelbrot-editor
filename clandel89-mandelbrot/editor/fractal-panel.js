@@ -16,6 +16,12 @@ $fp.init = function ()
             if (this.value.replace(/\s/g, '') === '')
                 //disallow names like " " which can lock out the user from the root fractal
                 return;
+            for (let sibling of fractal().tree.parent.children) {
+                sibling = sibling.obj;
+                if (sibling.name === this.value)
+                    //disallow identical neighboring names
+                    return;
+            }
             fractal().name = this.value;
             if (fractal() === $t.fractals.obj)
                 $t.fractals.elemLabel.textContent = this.value;

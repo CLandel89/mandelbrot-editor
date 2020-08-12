@@ -29,13 +29,28 @@ $t.init = function ()
             type: 'button',
             value: String.fromCodePoint(0xFF0B), //fat plus
             onclick: function () {
+                let name = 'new fractal';
+                function isUnique() {
+                    //is the new name unique among the neighboring fractals?
+                    for (let sibling of parentTree.children) {
+                        if (sibling.obj.name === name)
+                            return false;
+                    }
+                    //no conflicts found, that means this name was not assigned under this parent before
+                    return true;
+                }
+                let nameN = 0;
+                while (!isUnique()) {
+                    nameN++;
+                    name = `new fractal ${nameN}`;
+                }
                 let subTree = parentTree.insertSorted({
                     obj: new $MB.Fractal(parentTree.obj),
-                    T: 'new fractal',
+                    T: name,
                     onclick: () => { selectFractal(subTree.obj); },
                 });
                 subTree.obj.tree = subTree;
-                subTree.obj.name = 'new fractal';
+                subTree.obj.name = name;
                 subTree.widgets = [
                     createFractalButton(subTree),
                     removeFractalButton(subTree),
