@@ -46,6 +46,12 @@
                     $MB.init();
                     $MB.editor.init();
                     document.getElementById("clandel89-mandelbrot-tree").appendChild(
+                        $MB.editor.export
+                    );
+                    document.getElementById("clandel89-mandelbrot-tree").appendChild(
+                        document.createElement('br')
+                    );
+                    document.getElementById("clandel89-mandelbrot-tree").appendChild(
                         $MB.editor.tree
                     );
                     document.getElementById("clandel89-mandelbrot-canvas").appendChild(

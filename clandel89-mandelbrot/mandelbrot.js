@@ -24,6 +24,7 @@ for (let dep of [
     "vertex.glsl",
     "complex",
     "editor/editor",
+    "editor/export",
     "editor/mouse",
     "editor/fractal-panel",
     "editor/tree",
@@ -106,6 +107,7 @@ $MB.drawScene = function () {
         0,
         $MB.cornerVertices.length/2,
     );
+    if ($e.initted) $e.export.updateJSON();
 };
 
 $MB.init = function ()

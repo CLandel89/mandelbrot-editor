@@ -13,6 +13,11 @@ $fp.init = function ()
         size: 8,
         value: fractal().name,
         onkeyup: function () {
+            if (!fractal().tree.parent) {
+                //the root item will always be called "fractals"
+                this.value = 'fractals';
+                return;
+            }
             if (this.value.replace(/\s/g, '') === '')
                 //disallow names like " " which can lock out the user from the root fractal
                 return;
@@ -31,6 +36,7 @@ $fp.init = function ()
                 fractal().tree.setLabel(this.value);
                 parent.insertSorted(fractal().tree);
             }
+            $e.export.updateJSON();
         },
     });
     $fp.n_iter = $u.elem({

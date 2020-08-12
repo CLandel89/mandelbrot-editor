@@ -58,6 +58,7 @@ $t.init = function ()
                 subTree.elemLabel.style.fontSize = '85%';
                 subTree.refresh();
                 parentTree.expand();
+                $e.export.updateJSON();
             },
         });
         stylizeButton(result);
@@ -103,6 +104,25 @@ $t.init = function ()
             $t.animations.elem,
         ]
     })
+};
+
+$t.jso = function () {
+    let result = {};
+    result.settings = {}; //WIP
+    function fractalTree(ftree) {
+        if (ftree === undefined)
+            ftree = $t.fractals;
+        let fractal = {...ftree.obj.definition()};
+        fractal.children = {};
+        for (let child of ftree.children)
+            //recursion: add subtrees of any depth down to the leaves
+            fractal.children[child.obj.name] = fractalTree(child);
+        return fractal;
+    }
+    result.fractals = fractalTree();
+    result.palettes = {}; //WIP
+    result.animations = {}; //WIP
+    return result;
 };
 
 }

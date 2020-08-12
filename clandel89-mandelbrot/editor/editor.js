@@ -6,6 +6,7 @@ let $MB = $CLandel89.Mandelbrot, $u = $MB.utils, $e = $MB.editor, $t = $e.tree, 
 
 $e.init = function () {
     $e.panel = $u.elem({E: 'a'});
+    $e.initExport();
     $t.init();
     $fp.init();
     //⇒editor/mouse.js
@@ -13,6 +14,7 @@ $e.init = function () {
     document.addEventListener('mouseup', $e.handleMouseUp);
     document.addEventListener('mousemove', $e.handleMouseMove);
     $MB.canvas.addEventListener('wheel', $e.handleWheel);
+    $e.initted = true;
 };
 
 }
