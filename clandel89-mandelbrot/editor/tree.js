@@ -76,14 +76,18 @@ $t.init = function ()
     selectFractal($MB.scene.fractals[0]);
     $t.palettes = new $u.Tree({T: 'palettes'});
     $t.animations = new $u.Tree({T: 'animations'});
-    let tree = document.getElementById($MB.treeId);
-    tree.appendChild($t.settings.elem);
-    tree.appendChild($u.elem({E: 'br'}));
-    tree.appendChild($t.fractals.elem);
-    tree.appendChild($u.elem({E: 'br'}));
-    tree.appendChild($t.palettes.elem);
-    tree.appendChild($u.elem({E: 'br'}));
-    tree.appendChild($t.animations.elem);
+    $e.tree = $u.elem({
+        E: 'table',
+        C: [
+            $t.settings.elem,
+            {E: 'br'},
+            $t.fractals.elem,
+            {E: 'br'},
+            $t.palettes.elem,
+            {E: 'br'},
+            $t.animations.elem,
+        ]
+    })
 };
 
 }

@@ -2,9 +2,10 @@
 
 {
 
-let $MB = $CLandel89.Mandelbrot, $e = $MB.editor, $t = $e.tree, $fp = $e.fractalPanel;
+let $MB = $CLandel89.Mandelbrot, $u = $MB.utils, $e = $MB.editor, $t = $e.tree, $fp = $e.fractalPanel;
 
 $e.init = function () {
+    $e.panel = $u.elem({E: 'a'});
     $t.init();
     $fp.init();
     //⇒editor/mouse.js

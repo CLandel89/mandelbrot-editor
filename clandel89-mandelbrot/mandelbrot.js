@@ -39,13 +39,6 @@ for (let dep of [
     document.getElementsByTagName('head').item(0).appendChild(scriptTag);
 }
 
-// Now that the "dependencies" were attached to the document body,
-// we can instruct the browser to kick off the init method AFTER loading.
-window.addEventListener(
-    'load',
-    () => { $MB.init(); },
-);
-
 function updateUniforms (fractal) {
     let lenW, lenH; //length inside the complex pane of the fractal
     if ($MB.canvas.height > $MB.canvas.width) {
@@ -72,7 +65,27 @@ function updateUniforms (fractal) {
         'trans2': ['1i', [fractal.trans2]],
     };
     $MB.uniformTypeVal = $MB.uniformTypeVal;
-};
+}
+
+function initCanvasGL () {
+    // Set $MB.canvas and $MB.gl.
+    $MB.canvas = $u.elem({
+        E: 'canvas',
+        T: "HTML5 Canvas is not supported in your browser, sorry.",
+        width: 400,
+        height: 300,
+    });
+    $MB.gl = $MB.canvas.getContext('webgl2');
+    if (!$MB.gl) {
+        alert("WebGL v2 not supported, falling back on experimental-webgl");
+        $MB.gl = $MB.canvas.getContext('experimental-webgl');
+    }
+    if (!$MB.gl) {
+        let msg = "Your browser does not support WebGL";
+        alert(msg);
+        throw new Error(msg);
+    }
+}
 
 $MB.drawScene = function () {
     updateUniforms($MB.scene.fractals[0]);
@@ -106,16 +119,7 @@ $MB.init = function ()
 
     // To get WebGL started, I followed WebGL Tutorial 01 by Indigo Code:
     // https://www.youtube.com/watch?v=kB0ZVUrI4Aw
-    $MB.canvas = document.getElementById($MB.canvasId);
-    $MB.gl = $MB.canvas.getContext('webgl2');
-    if (!$MB.gl) {
-        alert('WebGL v2 not supported, falling back on experimental-webgl');
-        $MB.gl = $MB.canvas.getContext('experimental-webgl');
-    }
-    if (!$MB.gl) {
-        alert('Your browser does not support WebGL');
-        return undefined;
-    }
+    initCanvasGL();
     $MB.gl.viewport(0, 0, $MB.canvas.width, $MB.canvas.height);
     {
         //resize event handling https://stackoverflow.com/a/5825523
@@ -196,15 +200,15 @@ $MB.init = function ()
     $MB.gl.bindTexture($MB.gl.TEXTURE_2D, $MB.colorsTex);
     let n_iter = $MB.scene.fractals[0].n_iter;
     $MB.gl.texImage2D(
-        $MB.gl.TEXTURE_2D,                //target
-        0,                                //level
-        $MB.gl.RGB32F,                    //internalformat
-        n_iter,     //width
-        1,                                //height
-        0,                                //border
-        $MB.gl.RGB,                       //format
-        $MB.gl.FLOAT,                     //type
-        $MB.paletteArr(n_iter)  //pixels
+        $MB.gl.TEXTURE_2D, //target
+        0, //level
+        $MB.gl.RGB32F, //internalformat
+        n_iter, //width
+        1, //height
+        0, //border
+        $MB.gl.RGB, //format
+        $MB.gl.FLOAT, //type
+        $MB.paletteArr(n_iter) //pixels
     );
     $MB.gl.texParameteri($MB.gl.TEXTURE_2D, $MB.gl.TEXTURE_WRAP_S, $MB.gl.CLAMP_TO_EDGE);
     $MB.gl.texParameteri($MB.gl.TEXTURE_2D, $MB.gl.TEXTURE_WRAP_T, $MB.gl.CLAMP_TO_EDGE);
@@ -212,12 +216,7 @@ $MB.init = function ()
     $MB.gl.texParameteri($MB.gl.TEXTURE_2D, $MB.gl.TEXTURE_MIN_FILTER, $MB.gl.NEAREST);
     $MB.gl.bindTexture($MB.gl.TEXTURE_2D, null);
 
-    // Main render loop
-    // (just returning from the function in this case)
-    $MB.drawScene();
-    // Are the panel and tree also desired or just the canvas?
-    $e.enabled = !! ($MB.panelId && $MB.treeId);
-    if ($e.enabled) $e.init();
+    // The WebGL tutorial recommends a main loop in this spot; this software doesn't need one.
 };
 
 }

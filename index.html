@@ -21,25 +21,43 @@
 
         <table>
             <tr>
-                <td>
-                    <a id="clandel89-mandelbrot-tree"></a>
-                </td>
-                <td>
-                    <canvas id="clandel89-mandelbrot-canvas" width="400" height="300">
-                        HTML5 Canvas is not supported in your browser, sorry.
-                    </canvas>
-                </td>
-                <td>
-                    <a id="clandel89-mandelbrot-panel"></a>
-                </td>
+                <td id="clandel89-mandelbrot-tree"></td>
+                <td id="clandel89-mandelbrot-canvas"></td>
+                <td id="clandel89-mandelbrot-panel"></td>
             </tr>
         </table>
 
-        <script src="clandel89-mandelbrot//mandelbrot.js"></script>
+        <script src="clandel89-mandelbrot/mandelbrot.js"></script>
         <script>
-            $CLandel89.Mandelbrot.treeId="clandel89-mandelbrot-tree";
-            $CLandel89.Mandelbrot.canvasId="clandel89-mandelbrot-canvas";
-            $CLandel89.Mandelbrot.panelId="clandel89-mandelbrot-panel";
+            "use strict";
+
+            //put the code inside a scope so the global objects don't become polluted
+            {
+
+            let $MB = $CLandel89.Mandelbrot;
+
+            // Since mandelbrot.js loads additional JS files,
+            // we need to instruct the browser to kick off the init methods AFTER loading.
+            // After initialisation, we can put the UI together.
+            // https://stackoverflow.com/a/43076418
+            window.addEventListener(
+                'load',
+                () => {
+                    $MB.init();
+                    $MB.editor.init();
+                    document.getElementById("clandel89-mandelbrot-tree").appendChild(
+                        $MB.editor.tree
+                    );
+                    document.getElementById("clandel89-mandelbrot-canvas").appendChild(
+                        $MB.canvas
+                    );
+                    document.getElementById("clandel89-mandelbrot-panel").appendChild(
+                        $MB.editor.panel
+                    );
+                },
+            );
+
+            }
         </script>
 
     </body>

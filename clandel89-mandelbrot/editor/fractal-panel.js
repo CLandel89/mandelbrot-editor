@@ -293,7 +293,7 @@ $fp.init = function ()
             },
         ]
     });
-    document.getElementById('clandel89-mandelbrot-panel').appendChild($fp.panel);
+    $e.panel.appendChild($fp.panel);
     $fp.initted = true;
 };
 
