@@ -65,7 +65,6 @@ function updateUniforms (fractal) {
         'trans1': ['1i', [fractal.trans1]],
         'trans2': ['1i', [fractal.trans2]],
     };
-    $MB.uniformTypeVal = $MB.uniformTypeVal;
 }
 
 function initCanvasGL () {
